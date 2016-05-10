@@ -49,6 +49,84 @@ $course = $DB->get_record('course', array('id'=>$cm->course), '*', MUST_EXIST);
 
 require_course_login($course, true, $cm);
 $context = context_module::instance($cm->id);
+
+echo $OUTPUT->header();
+echo $OUTPUT->heading(format_string('Name des Videos'), 2);
+echo '<video><source src="https://olw-material.hrz.tu-darmstadt.de/olw-konv-repository/material/7f/6d/69/90/73/46/11/e5/a1/df/00/50/56/bd/73/ae/2.mp4"></video>';
+echo '<hr>';
+echo '<style>
+th, td {
+    padding: 5px;
+    text-align: left;
+    vertical-align: top;
+}
+</style>';
+echo '
+<table>
+  <tr>
+    <td>
+    <label>
+      Gruppen
+    <select>
+      <option>Alle Gruppen anzeigen</option>
+      <option>Gruppe 1</option>
+      <option>Gruppe 2</option>
+      <option>Gruppe 3</option>
+    </select>
+    </label>
+    </td>
+    <td>
+    <label>
+      Sortieren nach
+      <select>
+        <option>Likes</option>
+        <option>Aktualität</option>
+      </select>
+    </label>
+    </td>
+  </tr>
+  <tr>
+    <td>
+    <label>
+      <input type="checkbox" name="zutat" value="salami">
+      Nur unbeantwortete Annotationen anzeigen
+    </label>
+    </td>
+    <tD>
+    <fieldset>
+      <input type="radio" id="mc" name="Zahlmethode" value="Mastercard" checked><label for="mc"> Nur Annonationen zur aktuellen Stelle</label><br>
+      <input type="radio" id="vi" name="Zahlmethode" value="Visa"><label for="vi">  Alle Annonationen</label><br>
+    </fieldset>
+    </td>
+  </tr>
+</table>
+';
+
+echo '
+<table style="vertical-align: top; padding: 5px;">
+  <tr>
+    <td style="vertical-align: top;"><img src="https://mdl-alpha.un.hrz.tu-darmstadt.de/pluginfile.php/30/user/icon/tudarmstadt/f1?rev=9359" alt="Nutzerbild Support Moodle" title="Nutzerbild Support Moodle" class="userpicture" width="64" height="64"></td>
+    <td>
+      <b>User XYZ</b>  vor 3 Stunden <br>
+      Meine Frage...<BR>
+      <button>Antworten</button><button>Like</button><button>Als beantwortet markieren</button><button>Annotation übernehmen</button><BR>
+      <table>
+      <tr>
+        <td><img src="https://moodle.tu-darmstadt.de/pluginfile.php/34463/user/icon/tudarmstadt/f2?rev=295314" class="userpicture" width="64" height="64"></td>
+        <td>
+          <b>User 3</b>  vor 2 Stunden <br>
+          Antwort<BR>
+          <button>Antworten</button><button>Like</button><BR>
+          <table>
+          </table>
+        </td>
+      </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+';
+/*
 require_capability('mod/videoannotations:view', $context);
 
 // Completion and trigger events.
@@ -90,5 +168,5 @@ echo $OUTPUT->box($content, "generalbox center clearfix");
 
 $strlastmodified = get_string("lastmodified");
 echo "<div class=\"modified\">$strlastmodified: ".userdate($videoannotations->timemodified)."</div>";
-
+*/
 echo $OUTPUT->footer();
