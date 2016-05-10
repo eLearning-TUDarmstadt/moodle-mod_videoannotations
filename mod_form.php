@@ -49,11 +49,11 @@ class mod_videoannotations_mod_form extends moodleform_mod {
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
         $this->standard_intro_elements();
 
-        //-------------------------------------------------------
-        $mform->addElement('header', 'contentsection', get_string('contentheader', 'videoannotations'));
         $mform->addElement('text', 'url', get_string('url', 'videoannotations'), array());
+        $mform->addHelpButton('url', 'url', 'videoannotations');
 
         //-------------------------------------------------------
+        /*
         $mform->addElement('header', 'appearancehdr', get_string('appearance'));
 
         if ($this->current->instance) {
@@ -99,7 +99,7 @@ class mod_videoannotations_mod_form extends moodleform_mod {
             $mform->addElement('select', 'legacyfiles', get_string('legacyfiles', 'videoannotations'), $options);
             $mform->setAdvanced('legacyfiles', 1);
         }
-
+        */
         //-------------------------------------------------------
         $this->standard_coursemodule_elements();
 

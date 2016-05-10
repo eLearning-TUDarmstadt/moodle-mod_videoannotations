@@ -116,7 +116,10 @@ function videoannotations_add_instance($data, $mform = null) {
         $data->contentformat = $data->videoannotations['format'];
     }
 
+        $data->content = '';
+        $data->contentformat = 0;
     $data->id = $DB->insert_record('videoannotations', $data);
+
 
     // we need to use context now, so we need to make sure all needed info is already in db
     $DB->set_field('course_modules', 'instance', $data->id, array('id'=>$cmid));
