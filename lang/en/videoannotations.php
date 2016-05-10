@@ -28,3 +28,6 @@ $string['modulename_help'] = 'HELP! I need somebody! HELP! Not just anyone!';
 $string['modulename_link'] = 'mod/videoannotations/view';
 $string['modulenameplural'] = 'Video annotations';
 $string['pluginname'] = 'Video annotations';
+
+$string['url'] = 'URL';
+$string['url_help'] = 'Enter the URL to the video';
