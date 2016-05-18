@@ -22,12 +22,18 @@
  * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
+$string['displayoptions'] = '';
+$string['displayselect'] = '';
+$string['displayselectexplain'] = '';
 $string['modulename'] = 'Video annotations';
 $string['modulename_help'] = 'HELP! I need somebody! HELP! Not just anyone!';
 $string['modulename_link'] = 'mod/videoannotations/view';
 $string['modulenameplural'] = 'Video annotations';
 $string['pluginname'] = 'Video annotations';
-
+$string['popupheight'] = '';
+$string['popupheightexplain'] = '';
+$string['popupwidth'] = '';
+$string['popupwidthexplain'] = '';
+$string['printintroexplain'] = '';
 $string['url'] = 'URL';
 $string['url_help'] = 'Enter the URL to the video';
