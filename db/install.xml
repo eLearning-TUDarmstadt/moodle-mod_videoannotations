@@ -37,8 +37,8 @@
         <FIELD NAME="duration" TYPE="int" LENGTH="20" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="subject" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="text" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
-        <FIELD NAME="isquestion" TYPE="binary" NOTNULL="false" SEQUENCE="false" COMMENT="Is this annotation a question?"/>
-        <FIELD NAME="isanswered" TYPE="binary" NOTNULL="false" SEQUENCE="false" COMMENT="Ist the question answered"/>
+        <FIELD NAME="isquestion" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false" COMMENT="Is this annotation a question?"/>
+        <FIELD NAME="isanswered" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false" COMMENT="Ist the question answered"/>
         <FIELD NAME="group" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="If running in group mode - this is the group id"/>
         <FIELD NAME="author" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The annotations author"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
@@ -68,7 +68,7 @@
         <FIELD NAME="foreignkey" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="the annotations or comments id"/>
         <FIELD NAME="author" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
-        <FIELD NAME="isaward" TYPE="binary" NOTNULL="false" SEQUENCE="false" COMMENT="If a teacher likes an annotation/a comment this contribution is awarded"/>
+        <FIELD NAME="isaward" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false" COMMENT="If a teacher likes an annotation/a comment this contribution is awarded"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
