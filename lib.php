@@ -28,12 +28,13 @@ defined('MOODLE_INTERNAL') || die;
  * @param string $feature FEATURE_xx constant for requested feature
  * @return mixed True if module supports feature, false if not, null if doesn't know
  */
+
 function videoannotations_supports($feature) {
     switch($feature) {
-        case FEATURE_MOD_ARCHETYPE:           return MOD_ARCHETYPE_RESOURCE;
+        case FEATURE_MOD_ARCHETYPE:           return MOD_ARCHETYPE_OTHER;
         case FEATURE_GROUPS:                  return false;
         case FEATURE_GROUPINGS:               return false;
-        case FEATURE_MOD_INTRO:               return true;
+        case FEATURE_MOD_INTRO:               return false;
         case FEATURE_COMPLETION_TRACKS_VIEWS: return true;
         case FEATURE_GRADE_HAS_GRADE:         return false;
         case FEATURE_GRADE_OUTCOMES:          return false;
@@ -101,23 +102,9 @@ function videoannotations_add_instance($data, $mform = null) {
 
     $cmid = $data->coursemodule;
 
+    $data->timecreated = time();
     $data->timemodified = time();
-    $displayoptions = array();
-    if ($data->display == RESOURCELIB_DISPLAY_POPUP) {
-        $displayoptions['popupwidth']  = $data->popupwidth;
-        $displayoptions['popupheight'] = $data->popupheight;
-    }
-    $displayoptions['printheading'] = $data->printheading;
-    $displayoptions['printintro']   = $data->printintro;
-    $data->displayoptions = serialize($displayoptions);
 
-    if ($mform) {
-        $data->content       = $data->videoannotations['text'];
-        $data->contentformat = $data->videoannotations['format'];
-    }
-
-        $data->content = '';
-        $data->contentformat = 0;
     $data->id = $DB->insert_record('videoannotations', $data);
 
 
@@ -125,12 +112,13 @@ function videoannotations_add_instance($data, $mform = null) {
     $DB->set_field('course_modules', 'instance', $data->id, array('id'=>$cmid));
     $context = context_module::instance($cmid);
 
+    /*
     if ($mform and !empty($data->videoannotations['itemid'])) {
         $draftitemid = $data->videoannotations['itemid'];
         $data->content = file_save_draft_area_files($draftitemid, $context->id, 'mod_videoannotations', 'content', 0, videoannotations_get_editor_options($context), $data->content);
         $DB->update_record('videoannotations', $data);
     }
-
+    */
     return $data->id;
 }
 
@@ -151,17 +139,6 @@ function videoannotations_update_instance($data, $mform) {
     $data->id           = $data->instance;
     $data->revision++;
 
-    $displayoptions = array();
-    if ($data->display == RESOURCELIB_DISPLAY_POPUP) {
-        $displayoptions['popupwidth']  = $data->popupwidth;
-        $displayoptions['popupheight'] = $data->popupheight;
-    }
-    $displayoptions['printheading'] = $data->printheading;
-    $displayoptions['printintro']   = $data->printintro;
-    $data->displayoptions = serialize($displayoptions);
-
-    $data->content       = $data->videoannotations['text'];
-    $data->contentformat = $data->videoannotations['format'];
 
     $DB->update_record('videoannotations', $data);
 
@@ -204,6 +181,7 @@ function videoannotations_delete_instance($id) {
  * @return cached_cm_info Info to customise main videoannotations display
  */
 function videoannotations_get_coursemodule_info($coursemodule) {
+    /*
     global $CFG, $DB;
     require_once("$CFG->libdir/resourcelib.php");
 
@@ -230,8 +208,9 @@ function videoannotations_get_coursemodule_info($coursemodule) {
     $height = empty($options['popupheight']) ? 450 : $options['popupheight'];
     $wh = "width=$width,height=$height,toolbar=no,location=no,menubar=no,copyhistory=no,status=no,directories=no,scrollbars=yes,resizable=yes";
     $info->onclick = "window.open('$fullurl', '', '$wh'); return false;";
-
-    return $info;
+    */
+    //return $info;
+    return "Hello";
 }
 
 
@@ -267,6 +246,7 @@ function videoannotations_get_file_areas($course, $cm, $context) {
  * @param string $filename file name
  * @return file_info instance or null if not found
  */
+/*
 function videoannotations_get_file_info($browser, $areas, $course, $cm, $context, $filearea, $itemid, $filepath, $filename) {
     global $CFG;
 
@@ -298,6 +278,7 @@ function videoannotations_get_file_info($browser, $areas, $course, $cm, $context
 
     return null;
 }
+ */
 
 /**
  * Serves the videoannotations files.
@@ -313,6 +294,7 @@ function videoannotations_get_file_info($browser, $areas, $course, $cm, $context
  * @param array $options additional options affecting the file serving
  * @return bool false if file not found, does not return if found - just send the file
  */
+/*
 function videoannotations_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
     global $CFG, $DB;
     require_once("$CFG->libdir/resourcelib.php");
@@ -372,7 +354,7 @@ function videoannotations_pluginfile($course, $cm, $context, $filearea, $args, $
         send_stored_file($file, null, 0, $forcedownload, $options);
     }
 }
-
+*/
 /**
  * Return a list of videoannotations types
  * @param string $videoannotationstype current videoannotations type
@@ -451,6 +433,7 @@ function videoannotations_dndupload_register() {
  * @param object $uploadinfo details of the file / content that has been uploaded
  * @return int instance id of the newly created mod
  */
+/*
 function videoannotations_dndupload_handle($uploadinfo) {
     // Gather the required info.
     $data = new stdClass();
@@ -477,6 +460,7 @@ function videoannotations_dndupload_handle($uploadinfo) {
 
     return videoannotations_add_instance($data, null);
 }
+*/
 
 /**
  * Mark the activity completed (if required) and trigger the course_module_viewed event.
