@@ -1,8 +1,5 @@
 <?php
-<<<<<<< HEAD
-=======
 
->>>>>>> ec521bfb999aedc8b04059347ee603c4adc4d953
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -57,7 +54,7 @@ echo $OUTPUT->header();
 echo $OUTPUT->heading(format_string('Name des Videos'), 2);
 echo '<video><source src="https://olw-material.hrz.tu-darmstadt.de/olw-konv-repository/material/7f/6d/69/90/73/46/11/e5/a1/df/00/50/56/bd/73/ae/2.mp4"></video>';
 echo '<hr>';
-<<<<<<< HEAD
+
 /*
 require_once $CFG->dirroot . '/mod/videoannotations/classes/output/renderer.php';
 require_once $CFG->dirroot . '/mod/videoannotations/classes/output/view_page.php';
@@ -80,8 +77,7 @@ echo $output->render($renderable);
 */
 
 echo '<hr>';
-=======
->>>>>>> ec521bfb999aedc8b04059347ee603c4adc4d953
+
 echo '<style>
 th, td {
     padding: 5px;
@@ -89,10 +85,7 @@ th, td {
     vertical-align: top;
 }
 </style>';
-<<<<<<< HEAD
 
-=======
->>>>>>> ec521bfb999aedc8b04059347ee603c4adc4d953
 echo '
 <table>
   <tr>
