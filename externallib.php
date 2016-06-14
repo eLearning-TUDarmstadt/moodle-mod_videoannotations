@@ -120,13 +120,10 @@ class mod_videoannotations_external extends external_api {
         self::validate_context($context);
 
         global $DB;
-        $annotations = $DB->get_records('videoannotations_annotations', array('annotationinstance' => $params->id));
-        //echo "<pre>".print_r($annotations, true)."</pre>";
-
-
-        $returnedvalue = 42;
-
-        return $returnedvalue;
+        $annotations = $DB->get_records('videoannotations_annotations', array('annotationinstance' => 1));
+        
+        // Hack to convert stdClass Object to array
+        return json_decode(json_encode($annotations), True);
     }
 
     /**
@@ -134,7 +131,25 @@ class mod_videoannotations_external extends external_api {
      * @return external_description
      */
     public static function get_annotations_returns() {
-        return new external_value(PARAM_INT, 'human description of the returned value');
+        return new external_multiple_structure(
+            new external_single_structure(
+                array(
+                    'id' => new external_value(PARAM_INT, 'annotation id'),
+                    'annotationinstance' => new external_value(PARAM_INT, 'id of annotation instance'),
+                    'timeposition' => new external_value(PARAM_INT, 'time position in the video'),
+                    'duration' => new external_value(PARAM_INT, 'the duration of this annotation'),
+                    'subject' => new external_value(PARAM_TEXT, 'the subject/topic of this annotation'),
+                    'text' => new external_value(PARAM_RAW, 'the text'),
+                    'isquestion' => new external_value(PARAM_BOOL, 'is this annotation a question?'),
+                    'isanswered' => new external_value(PARAM_BOOL, 'if a question, is it answered?'),
+                    'group' => new external_value(PARAM_INT, 'the group id if written in seperated groups'),
+                    'author' => new external_value(PARAM_INT, 'the authors user id'),
+                    'timecreated' => new external_value(PARAM_INT, 'the unix creation timestamp'),
+                    'timemodified' => new external_value(PARAM_INT, 'the unix last change timestamp'),
+                    'comments' => new external_value(PARAM_RAW, 'datastructure for all comments'),
+                )
+            )
+        );
     }
 
     /**

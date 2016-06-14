@@ -50,7 +50,8 @@ $params['text'] = "Meine erste Annotation";
 $params['isquestion'] = true;
 $params['isanswered'] = false;
 
-$result = \mod_videoannotations_external::create_annotation($params);
+//\mod_videoannotations_external::create_annotation($params);
+$result = \mod_videoannotations_external::get_annotations(1);
 echo $OUTPUT->header();
 echo "<pre>".print_r($result, true)."</pre>";
 
