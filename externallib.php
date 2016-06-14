@@ -30,16 +30,16 @@ class mod_videoannotations_external extends external_api {
         // FUNCTIONNAME_parameters() always return an external_function_parameters(). 
         // The external_function_parameters constructor expects an array of external_description.
         return new external_function_parameters(array(
-                // a external_description can be: external_value, external_single_structure or external_multiple structure
-                array('annotationinstance' => new external_value(PARAM_INT, 'The instance id of table {videoannotations}'), VALUE_REQUIRED), 
-                array('timeposition' => new external_value(PARAM_INT, 'The position of the annotation in ms'), VALUE_REQUIRED), 
-                array('duration' => new external_value(PARAM_INT, 'The duration of the annotation'), VALUE_REQUIRED), 
-                array('subject' => new external_value(PARAM_TEXT, 'The subject of the annotation'), VALUE_REQUIRED), 
-                array('text' => new external_value(PARAM_RAW, 'The text of the annotation'), VALUE_REQUIRED), 
-                array('isquestion' => new external_value(PARAM_BOOL, 'Is this annotation a question?'), VALUE_REQUIRED), 
-                array('isanswered' => new external_value(PARAM_BOOL, 'Is this question answered?'), VALUE_REQUIRED), 
-                array('group' => new external_value(PARAM_INT, 'Group id', VALUE_OPTIONAL, -1))
-            )
+            // a external_description can be: external_value, external_single_structure or external_multiple structure
+            'annotationinstance' => new external_value(PARAM_INT, 'The instance id of table {videoannotations}', VALUE_REQUIRED),
+            'timeposition' => new external_value(PARAM_INT, 'The position of the annotation in ms', VALUE_REQUIRED),
+            'duration' => new external_value(PARAM_INT, 'The duration of the annotation', VALUE_REQUIRED),
+            'subject' => new external_value(PARAM_TEXT, 'The subject of the annotation', VALUE_REQUIRED),
+            'text' => new external_value(PARAM_RAW, 'The text of the annotation', VALUE_REQUIRED),
+            'isquestion' => new external_value(PARAM_BOOL, 'Is this annotation a question?', VALUE_REQUIRED),
+            'isanswered' => new external_value(PARAM_BOOL, 'Is this question answered?', VALUE_REQUIRED),
+                //'group' => new external_value(PARAM_INT, 'Group id', VALUE_OPTIONAL)
+                )
         );
     }
 
@@ -60,7 +60,6 @@ class mod_videoannotations_external extends external_api {
      * @return int The id of the newly created annotation
      */
     public static function create_annotation($array) {
-        echo "<pre>".print_r($array)."</pre>";
         //Parameters validation
         $params = self::validate_parameters(self::create_annotation_parameters(), $array);
 
@@ -68,6 +67,7 @@ class mod_videoannotations_external extends external_api {
         $cmid = self::get_cmid_by_instance($params['annotationinstance']);
         $context = context_module::instance($cmid);
         self::validate_context($context);
+
         // Capability validation
         require_capability('mod/videoannotations:createannotation', $context);
 
@@ -79,10 +79,17 @@ class mod_videoannotations_external extends external_api {
         $data->text = $params['text'];
         $data->isquestion = $params['isquestion'];
         $data->isanswered = $params['isanswered'];
-        $data->group = $params['group'];
+
+        // Get the current user as author
+        global $USER;
+        $data->author = intval($USER->id);
+
+        //$data->group = $params['group'];
         $data->timecreated = time();
         $data->timemodified = time();
 
+        // Insert and return
+        global $DB;
         return $DB->insert_record('videoannotations_annotations', $data);
     }
 

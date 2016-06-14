@@ -49,7 +49,6 @@ $params['subject'] = "Mein erster Betreff";
 $params['text'] = "Meine erste Annotation";
 $params['isquestion'] = true;
 $params['isanswered'] = false;
-$params['group'] = -1;
 
 $result = \mod_videoannotations_external::create_annotation($params);
 echo $OUTPUT->header();
