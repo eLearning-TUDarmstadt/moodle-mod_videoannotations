@@ -67,15 +67,52 @@ class mod_videoannotations_external extends external_api {
         return $DB->insert_record('videoannotations_comments', $data);
     }
 
-//
-// Get comments for annotation
-//
     //
-    // Get annotation
-//
+    // Get comments for annotation
+    //
+    public static function get_comments_parameters() {
+        return new external_function_parameters(
+                array(
+            // a external_description can be: external_value, external_single_structure or external_multiple structure
+            'annotationid' => new external_value(PARAM_INT, 'The id of the annotation', VALUE_REQUIRED)
+                )
+        );
+    }
+
+    public static function get_comments_returns() {
+        return new external_multiple_structure(
+                new external_single_structure(
+                array(
+            'id' => new external_value(PARAM_INT, 'annotation id'),
+            'text' => new external_value(PARAM_RAW, 'the text'),
+            'author' => new external_value(PARAM_INT, 'the authors user id'),
+            'timecreated' => new external_value(PARAM_INT, 'the unix creation timestamp'),
+            'timemodified' => new external_value(PARAM_INT, 'the unix last change timestamp'),
+                )
+                )
+        );
+    }
+
+    public static function get_comments($array) {
+        global $DB;
+
+        //Parameters validation
+        $params = self::validate_parameters(self::get_comments_parameters(), $array);
+
+        // Context validation
+        $cmid = self::get_cmid_by_instance($params['annotationinstance']);
+        $context = context_module::instance($cmid);
+        self::validate_context($context);
+
+        // Capability validation
+        require_capability('mod/videoannotations:readcomments', $context);
+
+        return $DB->get_records('videoannotations_comments', array('annotationid' => $params['annotationid']), null, 'id,text,author,timecreated,timemodified');
+    }
+
     //
     // Create annotaion
-//
+    //
     /**
      * Returns description of method parameters
      * @return external_function_parameters
@@ -175,6 +212,10 @@ class mod_videoannotations_external extends external_api {
 
         global $DB;
         $annotations = $DB->get_records('videoannotations_annotations', array('annotationinstance' => 1));
+        
+        foreach ($annotations as $id => $annotation) {
+            $annotations[$id]->comments = self::get_comments(array('annotationid' => $id));
+        }
 
         // Hack to convert stdClass Object to array
         return json_decode(json_encode($annotations), True);
