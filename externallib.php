@@ -14,14 +14,68 @@ class mod_videoannotations_external extends external_api {
     //
     // Create comment
     //
-    
+    public static function create_comment_parameters() {
+        return new external_function_parameters(
+                array(
+            // a external_description can be: external_value, external_single_structure or external_multiple structure
+            'annotationid' => new external_value(PARAM_INT, 'The id of the commented annotation', VALUE_REQUIRED),
+            'text' => new external_value(PARAM_RAW, 'The text of the comment', VALUE_REQUIRED),
+                )
+        );
+    }
+
+    public static function create_comment_returns() {
+        return new external_single_structure(
+                array(
+            'id' => new external_value(PARAM_INT, 'The id of the newly created comment')
+                )
+        );
+    }
+
+    public static function create_comment($array) {
+        global $DB;
+
+        //Parameters validation
+        $params = self::validate_parameters(self::create_comment_parameters(), $array);
+
+        // Context validation
+        $cmid = self::get_cmid_by_instance($params['annotationinstance']);
+        $context = context_module::instance($cmid);
+        self::validate_context($context);
+
+        // Capability validation
+        require_capability('mod/videoannotations:createcomment', $context);
+
+        // Does the annotation exist?
+        if (!$DB->record_exists('videoannotations_annotations', array('id' => $params['annotationid']))) {
+            throw new dml_exception('wrongdestpath', 'annotation not found', 'The annotation with the id ' . $params['annotationid'] . ' does not exist');
+        }
+
+        $data = new stdClass();
+        $data->annotationid = $params['annotationid'];
+        $data->text = $params['text'];
+
+        // Get the current user as author
+        global $USER;
+        $data->author = intval($USER->id);
+
+
+        $data->timecreated = time();
+        $data->timemodified = time();
+
+        // Insert and return
+        return $DB->insert_record('videoannotations_comments', $data);
+    }
+
+//
+// Get comments for annotation
+//
     //
     // Get annotation
-    //
-    
+//
     //
     // Create annotaion
-    //
+//
     /**
      * Returns description of method parameters
      * @return external_function_parameters
@@ -121,7 +175,7 @@ class mod_videoannotations_external extends external_api {
 
         global $DB;
         $annotations = $DB->get_records('videoannotations_annotations', array('annotationinstance' => 1));
-        
+
         // Hack to convert stdClass Object to array
         return json_decode(json_encode($annotations), True);
     }
@@ -132,23 +186,23 @@ class mod_videoannotations_external extends external_api {
      */
     public static function get_annotations_returns() {
         return new external_multiple_structure(
-            new external_single_structure(
+                new external_single_structure(
                 array(
-                    'id' => new external_value(PARAM_INT, 'annotation id'),
-                    'annotationinstance' => new external_value(PARAM_INT, 'id of annotation instance'),
-                    'timeposition' => new external_value(PARAM_INT, 'time position in the video'),
-                    'duration' => new external_value(PARAM_INT, 'the duration of this annotation'),
-                    'subject' => new external_value(PARAM_TEXT, 'the subject/topic of this annotation'),
-                    'text' => new external_value(PARAM_RAW, 'the text'),
-                    'isquestion' => new external_value(PARAM_BOOL, 'is this annotation a question?'),
-                    'isanswered' => new external_value(PARAM_BOOL, 'if a question, is it answered?'),
-                    'group' => new external_value(PARAM_INT, 'the group id if written in seperated groups'),
-                    'author' => new external_value(PARAM_INT, 'the authors user id'),
-                    'timecreated' => new external_value(PARAM_INT, 'the unix creation timestamp'),
-                    'timemodified' => new external_value(PARAM_INT, 'the unix last change timestamp'),
-                    'comments' => new external_value(PARAM_RAW, 'datastructure for all comments'),
+            'id' => new external_value(PARAM_INT, 'annotation id'),
+            'annotationinstance' => new external_value(PARAM_INT, 'id of annotation instance'),
+            'timeposition' => new external_value(PARAM_INT, 'time position in the video'),
+            'duration' => new external_value(PARAM_INT, 'the duration of this annotation'),
+            'subject' => new external_value(PARAM_TEXT, 'the subject/topic of this annotation'),
+            'text' => new external_value(PARAM_RAW, 'the text'),
+            'isquestion' => new external_value(PARAM_BOOL, 'is this annotation a question?'),
+            'isanswered' => new external_value(PARAM_BOOL, 'if a question, is it answered?'),
+            'group' => new external_value(PARAM_INT, 'the group id if written in seperated groups'),
+            'author' => new external_value(PARAM_INT, 'the authors user id'),
+            'timecreated' => new external_value(PARAM_INT, 'the unix creation timestamp'),
+            'timemodified' => new external_value(PARAM_INT, 'the unix last change timestamp'),
+            'comments' => new external_value(PARAM_RAW, 'datastructure for all comments'),
                 )
-            )
+                )
         );
     }
 

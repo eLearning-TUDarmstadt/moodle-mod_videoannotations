@@ -47,6 +47,19 @@ $capabilities = array(
         )
     ),
     
+    'mod/videoannotations:createcomment' => array(
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => array(
+            'guest' => CAP_PROHIBIT,
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW,
+            'student' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
+            'coursecreator' => CAP_ALLOW
+        )
+    ),
+    
     'mod/videoannotations:addinstance' => array(
         'riskbitmask' => RISK_XSS,
 
