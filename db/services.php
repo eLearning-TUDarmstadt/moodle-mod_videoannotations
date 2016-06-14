@@ -29,4 +29,31 @@ $functions = array(
         'ajax'        => true
         //'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE)    // Optional, only available for Moodle 3.1 onwards. List of built-in services (by shortname) where the function will be included.  Services created manually via the Moodle interface are not supported.
     ),
+    'mod_videoannotations_create_comment' => array(         //web service function name
+        'classname'   => 'mod_videoannotations_external',  //class containing the external function
+        'methodname'  => 'create_comment',          //external function name
+        'classpath'   => 'mod/videoannotations/externallib.php',  //file containing the class/external function
+        'description' => 'Comment an annotation',    //human readable description of the web service function
+        'type'        => 'write',                  //database rights of the web service function (read, write)
+        'ajax'        => true
+        //'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE)    // Optional, only available for Moodle 3.1 onwards. List of built-in services (by shortname) where the function will be included.  Services created manually via the Moodle interface are not supported.
+    ),
+    'mod_videoannotations_get_annotations' => array(         //web service function name
+        'classname'   => 'mod_videoannotations_external',  //class containing the external function
+        'methodname'  => 'get_annotations',          //external function name
+        'classpath'   => 'mod/videoannotations/externallib.php',  //file containing the class/external function
+        'description' => 'Get all annotations of an acitivity instance',    //human readable description of the web service function
+        'type'        => 'read',                  //database rights of the web service function (read, write)
+        'ajax'        => true
+        //'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE)    // Optional, only available for Moodle 3.1 onwards. List of built-in services (by shortname) where the function will be included.  Services created manually via the Moodle interface are not supported.
+    ),
+    'mod_videoannotations_get_comments' => array(         //web service function name
+        'classname'   => 'mod_videoannotations_external',  //class containing the external function
+        'methodname'  => 'get_comments',          //external function name
+        'classpath'   => 'mod/videoannotations/externallib.php',  //file containing the class/external function
+        'description' => 'Get all comments of an annotation',    //human readable description of the web service function
+        'type'        => 'read',                  //database rights of the web service function (read, write)
+        'ajax'        => true
+        //'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE)    // Optional, only available for Moodle 3.1 onwards. List of built-in services (by shortname) where the function will be included.  Services created manually via the Moodle interface are not supported.
+    ),
 );
