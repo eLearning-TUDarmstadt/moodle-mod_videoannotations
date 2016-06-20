@@ -50,10 +50,44 @@ $course = $DB->get_record('course', array('id'=>$cm->course), '*', MUST_EXIST);
 require_course_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 
+
 echo $OUTPUT->header();
-echo $OUTPUT->heading(format_string('Name des Videos'), 2);
-echo '<video><source src="https://olw-material.hrz.tu-darmstadt.de/olw-konv-repository/material/7f/6d/69/90/73/46/11/e5/a1/df/00/50/56/bd/73/ae/2.mp4"></video>';
-echo '<hr>';
+
+$modpath = $CFG->dirroot . '/mod/videoannotations';
+require_once $modpath . '/classes/output/renderer.php';
+require_once $modpath . '/classes/output/view_page.php';
+require_once $modpath . '/externallib.php';
+require_once $modpath . '/plugins/plugin.php';
+
+$output = $PAGE->get_renderer('mod_videoannotations');
+
+$tabs = [
+  0 => [
+    "id" => "tab1",
+    "name" => "Annotationen zur aktuellen Stelle",
+    "content" => "<b>aktuelle Annotationen</b>"
+  ],
+  1 => [
+    "id" => "tab2",
+    "name" => "alle Annotationen",
+    "content" => "<b>alle Annotationen</b>"
+  ]
+];
+
+$data = [
+    'cmid' => $cm->id,
+    'course' => $cm->course,
+    'videoannotations' => $videoannotations,
+    'videourls' => videoannotations_plugin::checkPlugins($videoannotations->url),
+];
+
+//echo "<pre>" . print_r($data, true) . "</pre>";
+
+$renderable = new \mod_videoannotations\output\view_page($data);
+echo $output->render($renderable);
+//echo $OUTPUT->heading(format_string('Name des Videos'), 2);
+//echo '<video><source src="https://olw-material.hrz.tu-darmstadt.de/olw-konv-repository/material/7f/6d/69/90/73/46/11/e5/a1/df/00/50/56/bd/73/ae/2.mp4"></video>';
+//echo '<hr>';
 
 /*
 require_once $CFG->dirroot . '/mod/videoannotations/classes/output/renderer.php';
@@ -75,7 +109,7 @@ $tabs = [
 $renderable = new \mod_videoannotations\output\view_page($tabs);
 echo $output->render($renderable);
 */
-
+/*
 echo '<hr>';
 
 echo '<style>

@@ -9,10 +9,10 @@ use stdClass;
 
 class view_page implements renderable, templatable {
     /** @var string $sometext Some text to show how to pass data to a template. */
-    var $tabs = null;
+    var $data = null;
 
-    public function __construct($tabs) {
-        $this->tabs = $tabs;
+    public function __construct($data) {
+        $this->data = $data;
     }
 
     /**
@@ -21,8 +21,6 @@ class view_page implements renderable, templatable {
      * @return stdClass
      */
     public function export_for_template(renderer_base $output) {
-        $data = new stdClass();
-        $data->tabs = $this->tabs;
-        return $data;
+        return $this->data;
     }
 }

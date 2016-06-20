@@ -1,34 +1,7 @@
 <div class="videoannotations_page_view">
-  <div id="videoannotationstabs">
-      <ul role="tablist" class="nav nav-tabs">
-      <li role="tab"
-          data-target="tab1"
-          data-selected-class="active" tabindex="-1">
-
-        <a href="#">Hello</a>
-      </li>
-      <li role="tab"
-          data-target="tab2"
-          data-selected-class="active" tabindex="-1">
-
-        <a href="#">Alles</a>
-      </li>
-  	</ul>
-      <div class="tab-content">
-  			<div role="tabpanel" class="tab-pane" id="tab1">
-          World
-  			</div>
-
-    			<div role="tabpanel" class="tab-pane" id="tab2">
-            cool
-    			</div>
-  	</div>
-  </div>
-  {{#js}}
-      require(['jquery','core/tabs'], function($, tabs) {
-
-          var container = $("#videoannotationstabs");
-          tabs.create(container);
-      });
-  {{/js}}
+    <video preload="auto" autoplay controls>
+        {{#videourls}}
+            <source src="{{url}}">
+        {{/videourls}}
+    </video>
 </div>
