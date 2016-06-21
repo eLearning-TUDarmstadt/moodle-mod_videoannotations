@@ -28,6 +28,10 @@ require_once($CFG->dirroot.'/mod/videoannotations/lib.php');
 require_once($CFG->dirroot.'/mod/videoannotations/locallib.php');
 require_once($CFG->libdir.'/completionlib.php');
 
+$url = new moodle_url("/mod/videoannotations/apitest.php");
+$PAGE->set_context(context_system::instance());
+$PAGE->set_url($url);
+
 $id      = optional_param('id', 0, PARAM_INT); // Course Module ID
 $p       = optional_param('p', 0, PARAM_INT);  // videoannotations instance ID
 $inpopup = optional_param('inpopup', 0, PARAM_BOOL);
@@ -51,7 +55,6 @@ require_course_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 
 
-echo $OUTPUT->header();
 
 $modpath = $CFG->dirroot . '/mod/videoannotations';
 require_once $modpath . '/classes/output/renderer.php';
@@ -61,30 +64,37 @@ require_once $modpath . '/plugins/plugin.php';
 
 $output = $PAGE->get_renderer('mod_videoannotations');
 
-$tabs = [
-  0 => [
-    "id" => "tab1",
-    "name" => "Annotationen zur aktuellen Stelle",
-    "content" => "<b>aktuelle Annotationen</b>"
-  ],
-  1 => [
-    "id" => "tab2",
-    "name" => "alle Annotationen",
-    "content" => "<b>alle Annotationen</b>"
-  ]
-];
+$plugin = videoannotations_plugin::getProperPlugin($videoannotations->url);
+$annotations = \mod_videoannotations_external::get_annotations($videoannotations->id);
+
+$annosAsArray = array();
+foreach ($annotations as $i => $a) {
+    $comments = array();
+    foreach ($a['comments'] as $key => $c) {
+        $comments[] = (object) $c;
+    }
+    $a['comments'] = $comments;
+    
+    $annosAsArray[] = (object) $a;
+}
 
 $data = [
     'cmid' => $cm->id,
     'course' => $cm->course,
     'videoannotations' => $videoannotations,
-    'videourls' => videoannotations_plugin::checkPlugins($videoannotations->url),
+    'videourls' => $plugin->getVideoUrls(),
+    'details' => $plugin->getDetails(),
+    'annotations' => $annosAsArray
 ];
 
-//echo "<pre>" . print_r($data, true) . "</pre>";
 
-$renderable = new \mod_videoannotations\output\view_page($data);
+//$obj = json_decode(json_encode($data));
+$obj = $data;
+echo $OUTPUT->header();
+$renderable = new \mod_videoannotations\output\view_page($obj);
 echo $output->render($renderable);
+echo "<h1>DEBUG</h1>";
+echo "<pre>" . print_r($obj, true) . "</pre>";
 //echo $OUTPUT->heading(format_string('Name des Videos'), 2);
 //echo '<video><source src="https://olw-material.hrz.tu-darmstadt.de/olw-konv-repository/material/7f/6d/69/90/73/46/11/e5/a1/df/00/50/56/bd/73/ae/2.mp4"></video>';
 //echo '<hr>';
