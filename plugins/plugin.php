@@ -9,8 +9,11 @@
 require_once __DIR__ . '/iplugin.php';
 
 abstract class videoannotations_plugin implements i_videoannotations_plugin {
+    public $url;
 
-    private $version;
+    public function __construct($url) {
+        $this->url = $url;
+    }
 
     public static function getVersion() {
         return self::VERSION;
@@ -25,7 +28,7 @@ abstract class videoannotations_plugin implements i_videoannotations_plugin {
         $result = array();
         // All php files
         $dir = opendir(__DIR__);
-        
+
         while (false !== ($filename = readdir($dir))) {
             if ($filename != "." && $filename != ".." && $filename != "plugin.php" && $filename != "iplugin.php") {
                 $info = new SplFileInfo($filename);
@@ -37,8 +40,8 @@ abstract class videoannotations_plugin implements i_videoannotations_plugin {
         return $result;
     }
 
-    public static function checkPlugins($url) {
-        $filenames = self::getPhpFiles();//forward_static_call('getPhpFiles');
+    public static function getProperPlugin($url) {
+        $filenames = self::getPhpFiles(); //forward_static_call('getPhpFiles');
 
         foreach ($filenames as $filename) {
             require_once __DIR__ . '/' . $filename;
@@ -48,7 +51,7 @@ abstract class videoannotations_plugin implements i_videoannotations_plugin {
             if (is_subclass_of($class, 'videoannotations_plugin')) {
                 $isProperPlugin = call_user_func(array($class, 'isProperPlugin'), $url);
                 if ($isProperPlugin) {
-                    return call_user_func(array($class, 'getVideoUrl'), $url);
+                    return new $class($url);
                 }
             }
         }
@@ -58,5 +61,11 @@ abstract class videoannotations_plugin implements i_videoannotations_plugin {
 
     abstract public static function isProperPlugin($url);
 
-    abstract public static function getVideoUrl($url);
+    abstract public static function getVideoUrlsFor($url);
+    
+    abstract public function getVideoUrls();
+
+    abstract public static function getDetailsFor($url);
+    
+    abstract public function getDetails();
 }

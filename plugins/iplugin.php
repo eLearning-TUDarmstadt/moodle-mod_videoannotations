@@ -14,5 +14,11 @@ interface i_videoannotations_plugin {
     
     public static function isProperPlugin($url);
     
-    public static function getVideoUrl($url);
+    public function getVideoUrls();
+    
+    public static function getVideoUrlsFor($url);
+    
+    public function getDetails();
+    
+    public static function getDetailsFor($url);
 }

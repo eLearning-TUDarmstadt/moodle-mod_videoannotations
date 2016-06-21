@@ -9,18 +9,11 @@ require_once __DIR__ . '/plugin.php';
 
 class videoannotations_openlearnware extends videoannotations_plugin {
 
-    public static function getVideoUrl($url) {
-        $resourceId = array_pop(explode('-', $url));
-        
-        $apiUrl = "https://openlearnware.tu-darmstadt.de/olw-rest-db/api/resource-detailview/index/" . $resourceId;
-        
-        $curl = curl_init($apiUrl);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        $return = json_decode(curl_exec($curl));
-        curl_close($curl);
+    private static function urlToVideoUrls($url) {
+        $details = self::getVideoDetails($url);
         
         // extract uuid
-        $uuid = str_replace('-', '', $return->uuid);
+        $uuid = str_replace('-', '', $details->uuid);
         $uuidForUrl = implode('/', str_split($uuid, 2));
         
         // add url to every possible material
@@ -52,9 +45,42 @@ class videoannotations_openlearnware extends videoannotations_plugin {
         
         return $urls;
     }
+    
+    private static function getVideoDetails($url) {
+        $explosion = explode('-', $url);
+        $resourceId = array_pop($explosion);
+        
+        $apiUrl = "https://openlearnware.tu-darmstadt.de/olw-rest-db/api/resource-detailview/index/" . $resourceId;
+        
+        $curl = curl_init($apiUrl);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        $details = json_decode(curl_exec($curl));
+        curl_close($curl);
+        return $details;
+    }
 
     public static function isProperPlugin($url) {
         return (strpos($url, "openlearnware.tu-darmstadt.de") !== false) ? true : false;
+    }
+
+    public function getDetails() {
+        return $this->getVideoDetails($this->url);
+    }
+
+    public function getVideoUrls() {
+        return self::urlToVideoUrls($this->url);
+    }
+
+    public static function getVideoUrlsFor($url) {
+        return self::urlToVideoUrls($url);
+    }
+
+    public static function getDetailsFor($url) {
+        return self::getVideoDetails($url);
+    }
+
+    public static function getVideoUrl($url) {
+        
     }
 
 }

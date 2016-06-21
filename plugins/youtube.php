@@ -1,7 +1,4 @@
 <?php
-
-use videoannotations_plugin;
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -24,6 +21,22 @@ class videoannotations_youtube extends videoannotations_plugin {
 
     public static function isProperPlugin($url) {
         return (strpos($url, "youtube.com/watch") !== false) ? true : false;
+    }
+
+    public function getDetails() {
+        
+    }
+
+    public function getVideoUrls() {
+        return self::getVideoUrl($this->url);
+    }
+
+    public static function getVideoUrlsFor($url) {
+        return self::getVideoUrl($url);
+    }
+
+    public static function getDetailsFor($url) {
+        
     }
 
 }
