@@ -100,9 +100,8 @@ class mod_videoannotations_external extends external_api {
 
         //Parameters validation
         $params = self::validate_parameters(self::get_comments_parameters(), $array);
-
         // Context validation
-        $cmid = self::get_cmid_by_instance($params['annotationinstance']);
+        $cmid = self::get_cmid_by_instance($params['annotationid']);
         $context = context_module::instance($cmid);
         self::validate_context($context);
 
@@ -281,8 +280,6 @@ class mod_videoannotations_external extends external_api {
     }
 
     /**
-     * 
-     * 
      * @param type $id The instance id
      */
     public static function get_cmid_by_instance($id) {
@@ -294,7 +291,8 @@ class mod_videoannotations_external extends external_api {
                         cm.module = m.id AND
                         m.name = 'videoannotations'";
         $result = $DB->get_records_sql($sql);
-        $obj = array_shift(array_slice($result, 0, 1));
+        $slice = array_slice($result, 0, 1);
+        $obj = array_shift($slice);
         return $obj->id;
     }
 
