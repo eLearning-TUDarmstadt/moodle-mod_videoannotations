@@ -5,6 +5,28 @@
             <source src="{{url}}">
         {{/videourls}}
     </video>
+    <br />
+    <div class="well">
+    	<fieldset>
+    		<legend>Anmerkung anlegen</legend>
+    			<span class="span1">Subject:</span>
+    			<span class="span10">
+    				<input name="subject" placeholder="Meine Frage/Anmerkung" />
+    			</span>
+    			<br />
+    			<span class="span1">Text:</span>
+    			<span class="span10">
+    				<textarea name="text" cols="80" rows="7"></textarea>
+    			</span>
+				<br />
+				<span class="span1">Ist das eine Frage?</span>
+    			<span class="span10">
+    				<input type="checkbox" name="isquestion" value="isquestion" checked />
+    			</span>
+				<br />
+				<button class="btn pull-right">{{# pix}} t/add, core, Anlegen{{/ pix}} Anlegen</button>
+    	</fieldset>
+    </div>
    <h3>Annotationen</h3>
     <div id="annotations">
         {{#annotations}}
