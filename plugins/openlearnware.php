@@ -12,6 +12,8 @@ class videoannotations_openlearnware extends videoannotations_plugin {
     private static function urlToVideoUrls($url) {
         $details = self::getVideoDetails($url);
         
+        //echo "<pre>" . print_r($details, true) . "</pre>";
+        
         // extract uuid
         $uuid = str_replace('-', '', $details->uuid);
         $uuidForUrl = implode('/', str_split($uuid, 2));
@@ -51,10 +53,22 @@ class videoannotations_openlearnware extends videoannotations_plugin {
         $resourceId = array_pop($explosion);
         
         $apiUrl = "https://openlearnware.tu-darmstadt.de/olw-rest-db/api/resource-detailview/index/" . $resourceId;
-        
         $curl = curl_init($apiUrl);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        $details = json_decode(curl_exec($curl));
+        
+        //Uncomment if debugging needed
+        // creates logfile at plugins/errorlog.txt
+        //curl_setopt($curl, CURLOPT_VERBOSE, true);
+        //$fp = fopen(dirname(__FILE__).'/errorlog.txt', 'w');
+        //curl_setopt($curl, CURLOPT_STDERR, $fp);
+        
+        // makes request insecure
+        // needed for tests with xampp
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        
+        $result = curl_exec($curl);
+        $details = json_decode($result);
+        //echo "<pre>" . print_r(curl_getinfo($curl), true) . "</pre>";
         curl_close($curl);
         return $details;
     }
