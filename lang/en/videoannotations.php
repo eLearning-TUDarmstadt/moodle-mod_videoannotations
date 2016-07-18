@@ -24,6 +24,7 @@
  */
 $string['pluginadministration'] = 'Administrate video annotation';
 $string['configdisplayoptions'] = '';
+$string['createvideoannotations'] = 'createvideoannotations';
 $string['displayoptions'] = '';
 $string['displayselect'] = '';
 $string['displayselectexplain'] = '';
