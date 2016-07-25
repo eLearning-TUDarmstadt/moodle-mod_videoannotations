@@ -67,8 +67,8 @@ $getComments = [
 
 require_once __DIR__ . '/plugins/plugin.php';
 
-$result = videoannotations_plugin::checkPlugins("https://www.youtube.com/watch?v=uK4ysfwpC4U");
-
+//$result = videoannotations_plugin::checkPlugins("https://www.youtube.com/watch?v=uK4ysfwpC4U");
+$result = new stdClass();
 echo $OUTPUT->header();
 echo "<pre>".print_r($result, true)."</pre>";
 
