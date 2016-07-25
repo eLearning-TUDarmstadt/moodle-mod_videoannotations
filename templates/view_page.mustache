@@ -1,64 +1,8 @@
 <h1>{{details.name}}</h1>
+
 <div class="videoannotations_page_view">
-    <video preload="auto" controls><!--autoplay -->
-        {{#videourls}}
-            <source src="{{url}}">
-        {{/videourls}}
-    </video>
+    {{> mod_videoannotations/video}}
     <br />
-    <div class="well">
-    	<fieldset>
-    		<legend>Anmerkung anlegen</legend>
-    			<span class="span1">Subject:</span>
-    			<span class="span10">
-    				<input name="subject" placeholder="Meine Frage/Anmerkung" />
-    			</span>
-    			<br />
-    			<span class="span1">Text:</span>
-    			<span class="span10">
-    				<textarea name="text" cols="80" rows="7"></textarea>
-    			</span>
-				<br />
-				<span class="span1">Ist das eine Frage?</span>
-    			<span class="span10">
-    				<input type="checkbox" name="isquestion" value="isquestion" checked />
-    			</span>
-				<br />
-				<button class="btn pull-right">{{# pix}} t/add, core, Anlegen{{/ pix}} Anlegen</button>
-    	</fieldset>
-    </div>
-   <h3>Annotationen</h3>
-    <div id="annotations">
-        {{#annotations}}
-            <div class="well">
-                <div class="btn-group pull-right">
-                  <button class="btn">{{# pix}} t/message, core, Kommentieren{{/ pix}}</button>
-                  <button class="btn">{{# pix}} i/edit, core, Bearbeiten{{/ pix}}</button>
-                  <button class="btn">{{# pix}} i/invalid, core, Löschen{{/ pix}}</button>
-                  <button class="btn">{{# pix}} i/info, core, Info{{/ pix}}</button>
-                </div>
-                <h5>{{author_firstname}} {{author_lastname}}:</h5>
-                <h4>{{subject}}</h4>
-                <p>
-                {{{text}}}
-                </p>
-                <br />
-                {{#comments}}
-                    <div class="row-fluid">
-                        <div class="span1"></div>
-                        <div class="span11 well well-small">
-                            <div class="btn-group pull-right">
-                                <button class="btn">{{# pix}} t/message, core, Kommentieren{{/ pix}}</button>
-                                <button class="btn">{{# pix}} i/edit, core, Bearbeiten{{/ pix}}</button>
-                                <button class="btn">{{# pix}} i/invalid, core, Löschen{{/ pix}}</button>
-                                <button class="btn">{{# pix}} i/info, core, Info{{/ pix}}</button>
-                              </div>
-                            <h6>{{author_firstname}} {{author_lastname}}:</h6>
-                            {{{text}}}
-                        </div>
-                    </div>
-                {{/comments}}
-            </div>
-        {{/annotations}}
-    </div>
+    {{> mod_videoannotations/new_annotation}}
+    {{> mod_videoannotations/annotation_list}}
 </div>

@@ -1,0 +1,37 @@
+<h3>Annotationen</h3>
+<div id="annotations">
+	{{#annotations}}
+	<div class="well">
+		<div class="btn-group pull-right">
+			<button class="btn">{{# pix}} t/message, core,
+				Kommentieren{{/ pix}}</button>
+			<button class="btn">{{# pix}} i/edit, core, Bearbeiten{{/
+				pix}}</button>
+			<button class="btn">{{# pix}} i/invalid, core, Löschen{{/
+				pix}}</button>
+			<button class="btn">{{# pix}} i/info, core, Info{{/ pix}}</button>
+		</div>
+		<h5>{{author_firstname}} {{author_lastname}}:</h5>
+		<h4>{{subject}}</h4>
+		<p>{{{text}}}</p>
+		<br /> {{#comments}}
+		<div class="row-fluid">
+			<div class="span1"></div>
+			<div class="span11 well well-small">
+				<div class="btn-group pull-right">
+					<button class="btn">{{# pix}} t/message, core,
+						Kommentieren{{/ pix}}</button>
+					<button class="btn">{{# pix}} i/edit, core, Bearbeiten{{/
+						pix}}</button>
+					<button class="btn">{{# pix}} i/invalid, core, Löschen{{/
+						pix}}</button>
+					<button class="btn">{{# pix}} i/info, core, Info{{/ pix}}</button>
+				</div>
+				<h6>{{author_firstname}} {{author_lastname}}:</h6>
+				{{{text}}}
+			</div>
+		</div>
+		{{/comments}}
+	</div>
+	{{/annotations}}
+</div>
