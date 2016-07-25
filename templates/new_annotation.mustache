@@ -9,7 +9,15 @@
 			class="span10"> <input type="checkbox" name="isquestion"
 			value="isquestion" checked />
 		</span> <br />
-		<button class="btn pull-right">{{# pix}} t/add, core,
+		<button id="newannotationbutton" class="btn pull-right">{{# pix}} t/add, core,
 			Anlegen{{/ pix}} Anlegen</button>
 	</fieldset>
 </div>
+
+{{#js}}
+    require(['mod_videoannotations/annotations'], function(a) {
+    	console.log("in it");
+    	console.log(a);
+        a.help();
+    });
+{{/js}}
