@@ -34,8 +34,7 @@ $capabilities = array (
 						'manager' => CAP_ALLOW
 				),
 				'clonepermissionsfrom' => 'moodle/course:manageactivities'
-		),
-		
+		),		
 		'mod/videoannotations:view' => array (
 				'captype' => 'read',
 				'contextlevel' => CONTEXT_MODULE,
@@ -44,7 +43,6 @@ $capabilities = array (
 						'user' => CAP_ALLOW 
 				) 
 		),
-		
 		'mod/videoannotations:createannotation' => array (
 				'captype' => 'write',
 				'contextlevel' => CONTEXT_MODULE,
@@ -56,8 +54,7 @@ $capabilities = array (
 						'teacher' => CAP_ALLOW,
 						'coursecreator' => CAP_ALLOW 
 				) 
-		),
-		
+		),		
 		'mod/videoannotations:createcomment' => array (
 				'captype' => 'write',
 				'contextlevel' => CONTEXT_MODULE,
@@ -70,7 +67,6 @@ $capabilities = array (
 						'coursecreator' => CAP_ALLOW 
 				) 
 		),
-		
 		'mod/videoannotations:readcomments' => array (
 				'captype' => 'read',
 				'contextlevel' => CONTEXT_MODULE,
@@ -82,20 +78,5 @@ $capabilities = array (
 						'teacher' => CAP_ALLOW,
 						'coursecreator' => CAP_ALLOW 
 				) 
-		),
-    
-    
-
-
-/* TODO: review public portfolio API first!
-    'mod/page:portfolioexport' => array(
-
-        'captype' => 'read',
-        'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => array(
-            'teacher' => CAP_ALLOW,
-            'editingteacher' => CAP_ALLOW,
-        )
-    ),
-*/
+		)
 );

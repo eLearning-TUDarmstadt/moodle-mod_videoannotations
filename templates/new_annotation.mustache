@@ -1,14 +1,25 @@
 <div class="well">
 	<fieldset>
 		<legend>Anmerkung anlegen</legend>
-		<span class="span1">Subject:</span> <span class="span10"> <input
-			name="subject" placeholder="Meine Frage/Anmerkung" />
-		</span> <br /> <span class="span1">Text:</span> <span class="span10">
-			<textarea name="text" cols="80" rows="7"></textarea>
-		</span> <br /> <span class="span1">Ist das eine Frage?</span> <span
-			class="span10"> <input type="checkbox" name="isquestion"
+		<input type="hidden" id="newannotation_modinstance" name="modinstance" value="{{videoannotations.id}}">
+		<span class="span1">Subject:</span> 
+		<span class="span10"> 
+			<input id="newannotation_subject" name="subject" placeholder="Meine Frage/Anmerkung" />
+		</span> 
+		<br /> 
+		<span class="span1">Text:</span> 
+		<span class="span10">
+			<textarea id="newannotation_text" name="text" cols="80" rows="7">
+			</textarea>
+		</span> 
+		<!-- Is question? -->
+		<br />
+		<span class="span1">Ist das eine Frage?</span> 
+		<span
+			class="span10"> <input id="newannotation_isquestion" type="checkbox" name="isquestion"
 			value="isquestion" checked />
-		</span> <br />
+		</span>
+		<br />
 		<button id="newannotationbutton" class="btn pull-right">{{# pix}} t/add, core,
 			Anlegen{{/ pix}} Anlegen</button>
 	</fieldset>
@@ -16,8 +27,6 @@
 
 {{#js}}
     require(['mod_videoannotations/annotations'], function(a) {
-    	console.log("in it");
-    	console.log(a);
-        a.help();
+        a.createNewAnnotation();
     });
 {{/js}}

@@ -18,4 +18,9 @@ class renderer extends plugin_renderer_base {
         $data = $page->export_for_template($this);
         return parent::render_from_template('mod_videoannotations/view_page', $data);
     }
+    
+    public function render_annotation_list($page) {
+    	$data = $page->export_for_template($this);
+    	return parent::render_from_template('mod_videoannotations/annotation_list', $data);
+    }
 }

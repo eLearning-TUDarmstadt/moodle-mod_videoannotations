@@ -7,6 +7,7 @@
 // (at your option) any later version.
 //
 // Moodle is distributed in the hope that it will be useful,
+/*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50 */ /*global define */
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -25,7 +26,9 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since 2.9
  */
-define('mod_videoannotations/refresh', ['jquery', 'core/ajax', 'core/templates', 'core/notification'], function ($, ajax, templates, notification) { 
+define('mod_videoannotations/refresh', 
+		['jquery', 'core/ajax', 'core/templates', 'core/notification'], 
+		function ($, ajax, templates, notification) { 
     return /** @alias module:local_hackfest/refresh */ {
         
         /**
