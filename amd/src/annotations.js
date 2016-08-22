@@ -1,4 +1,6 @@
-/*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50 *//*global define */
+/*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50 */
+/*global define */
+/* jshint unused:false */
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -25,12 +27,13 @@
  * @since 2.9
  */
 define(
-	['jquery', 'core/ajax', 'core/templates', 'core/notification'],
-	function ($, ajax, templates, notification) {
+	['jquery', 'core/ajax', 'core/templates', 'core/notification', 'jqueryui'],
+	function ($, ajax, templates, notification, jqui) {
 
 		var rerenderAnnotationList = function (modinstance) {
 			setLoaderVisible('annotationsloader');
 			$(".annotation").css("visibility", "hidden");
+
 			var d = $.Deferred();
 			var promises = ajax.call([{
 				methodname: 'mod_videoannotations_get_annotations',
@@ -58,6 +61,7 @@ define(
 			});
 			return d.promise();
 		};
+
 
 		var deleteAnnotation = function (id) {
 			var d = $.Deferred();
@@ -99,7 +103,21 @@ define(
 			 * console.log("Hello world"); console.log(e); }); },
 			 */
 			createNewAnnotation: function () {
+				// Accordion effect
+				$("#createannotationform").accordion({
+					active: false,
+					collapsible: true,
+					icons: {
+						header: "icon-arrow-right",//"ui-icon-circle-arrow-e",
+						activeHeader: "icon-arrow-down"//"ui-icon-circle-arrow-s"
+					}
+				});
+
 				$('#newannotationbutton').on('click', function () {
+					$(".annotation").css("visibility", "hidden");
+					$("#createannotationform").accordion({
+						active: false,
+					});
 					var modinstance = $("#newannotation_modinstance").val();
 					// First - reload the data for the page.
 
