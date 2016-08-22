@@ -29,6 +29,8 @@ define(
 	function ($, ajax, templates, notification) {
 
 		var rerenderAnnotationList = function (modinstance) {
+			setLoaderVisible('annotationsloader');
+			$(".annotation").css("visibility", "hidden");
 			var d = $.Deferred();
 			var promises = ajax.call([{
 				methodname: 'mod_videoannotations_get_annotations',
@@ -73,6 +75,17 @@ define(
 			}]);
 			return d.promise();
 		};
+		/*
+		var setLoaderInvisible = function(id) {
+			var loader = $("annotationsloader");
+			loader.css("visibility", "hidden");
+		};
+		*/
+		var setLoaderVisible = function (id) {
+			var loader = $("#" + id);
+			console.log(loader);
+			loader.css("visibility", "visible");
+		};
 
 		return /** @alias module:mod_annotations/annotations */	{
 			/**
@@ -89,6 +102,7 @@ define(
 				$('#newannotationbutton').on('click', function () {
 					var modinstance = $("#newannotation_modinstance").val();
 					// First - reload the data for the page.
+
 					ajax.call([{
 						methodname: 'mod_videoannotations_create_annotation',
 						args: {

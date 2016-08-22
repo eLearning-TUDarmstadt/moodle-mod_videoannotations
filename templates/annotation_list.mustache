@@ -1,13 +1,14 @@
 <div id="annotations" data-region="annotation-list">
+	<div id="annotationsloader" style="visibility: hidden; margin: auto; height: 0px; position: relative; left: 50%; transform: translateX(-50%); display: inline-block;">{{# pix}} i/loading, core, {{/pix}}</div>
 	<h3>{{numberOfAnnotations}} Annotationen</h3>
 	{{#annotations}}
-	<div class="well">
+	<div class="well annotation">
 		<div class="btn-group pull-right">
-			<button class="btn">{{# pix}} t/message, core,
+			<button class="btn">{{# pix}} i/feedback, core,
 				Kommentieren{{/ pix}}</button>
-			<button class="btn">{{# pix}} i/edit, core, Bearbeiten{{/
+			<button class="btn">{{# pix}} i/edit, core, {{# str }}edit{{/ str }}{{/
 				pix}}</button>
-			<button class="btn deleteAnnotationButton" annotationid={{id}}>{{# pix}} i/invalid, core, L�schen{{/
+			<button class="btn deleteAnnotationButton" annotationid={{id}}>{{# pix}} i/invalid, core, {{# str }}delete{{/ str }}{{/
 				pix}}</button>
 			<button class="btn">{{# pix}} i/info, core, Info{{/ pix}}</button>
 		</div>
@@ -23,7 +24,7 @@
 						Kommentieren{{/ pix}}</button>
 					<button class="btn">{{# pix}} i/edit, core, Bearbeiten{{/
 						pix}}</button>
-					<button class="btn">{{# pix}} i/invalid, core, L�schen{{/
+					<button class="btn">{{# pix}} i/invalid, core, {{# str }} delete {{/ str }} {{/
 						pix}}</button>
 					<button class="btn">{{# pix}} i/info, core, Info{{/ pix}}</button>
 				</div>
