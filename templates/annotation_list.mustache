@@ -1,5 +1,5 @@
 <div id="annotations" data-region="annotation-list">
-	<h3>Annotationen</h3>
+	<h3>{{numberOfAnnotations}} Annotationen</h3>
 	{{#annotations}}
 	<div class="well">
 		<div class="btn-group pull-right">
@@ -7,7 +7,7 @@
 				Kommentieren{{/ pix}}</button>
 			<button class="btn">{{# pix}} i/edit, core, Bearbeiten{{/
 				pix}}</button>
-			<button class="btn">{{# pix}} i/invalid, core, Löschen{{/
+			<button class="btn deleteAnnotationButton" annotationid={{id}}>{{# pix}} i/invalid, core, L�schen{{/
 				pix}}</button>
 			<button class="btn">{{# pix}} i/info, core, Info{{/ pix}}</button>
 		</div>
@@ -23,7 +23,7 @@
 						Kommentieren{{/ pix}}</button>
 					<button class="btn">{{# pix}} i/edit, core, Bearbeiten{{/
 						pix}}</button>
-					<button class="btn">{{# pix}} i/invalid, core, Löschen{{/
+					<button class="btn">{{# pix}} i/invalid, core, L�schen{{/
 						pix}}</button>
 					<button class="btn">{{# pix}} i/info, core, Info{{/ pix}}</button>
 				</div>
@@ -35,3 +35,9 @@
 	</div>
 	{{/annotations}}
 </div>
+
+{{#js}}
+    require(['mod_videoannotations/annotations'], function(a) {
+        a.deleteAnnotationListener();
+    });
+{{/js}}

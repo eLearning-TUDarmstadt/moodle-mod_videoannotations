@@ -27,22 +27,52 @@
 define(
 	['jquery', 'core/ajax', 'core/templates', 'core/notification'],
 	function ($, ajax, templates, notification) {
-		var renderAnnotationList = function (modinstance) {
-			ajax.call([{
+
+		var rerenderAnnotationList = function (modinstance) {
+			var d = $.Deferred();
+			var promises = ajax.call([{
 				methodname: 'mod_videoannotations_get_annotations',
 				args: { id: modinstance },
-				fail: notification.exception,
-				done: function (rawdata) {
-					var data = { annotations: rawdata };
-					templates.render('mod_videoannotations/annotation_list',
-						data).done(function (html, js) {
-							$('[data-region="annotation-list"]').replaceWith(html);
-							// And execute any JS that was in the template.
-							templates.runTemplateJS(js);
-						});
+				fail: function (e) {
+					//notification.exception;
+					console.log(e);
+					d.reject();
 				}
 			}]);
-		}
+			promises[0].done(function (rawdata) {
+				var data = { numberOfAnnotations: rawdata.length, annotations: rawdata };
+				var promise = templates.render('mod_videoannotations/annotation_list', data);
+				promise.done(function (html, js) {
+					$('[data-region="annotation-list"]').replaceWith(html);
+					templates.runTemplateJS(js);
+					d.resolve();
+				});
+				promise.fail(function (e) {
+					console.log("ERROR!");
+					console.log(e);
+					//notification.exception
+					d.reject();
+				});
+			});
+			return d.promise();
+		};
+
+		var deleteAnnotation = function (id) {
+			var d = $.Deferred();
+
+			ajax.call([{
+				methodname: 'mod_videoannotations_delete_annotation',
+				args: { annotationid: id },
+				fail: function () {
+					//notification.exception;
+					d.reject();
+				},
+				done: function () {
+					d.resolve();
+				}
+			}]);
+			return d.promise();
+		};
 
 		return /** @alias module:mod_annotations/annotations */	{
 			/**
@@ -59,7 +89,7 @@ define(
 				$('#newannotationbutton').on('click', function () {
 					var modinstance = $("#newannotation_modinstance").val();
 					// First - reload the data for the page.
-					var promises = ajax.call([{
+					ajax.call([{
 						methodname: 'mod_videoannotations_create_annotation',
 						args: {
 							annotationinstance: modinstance,
@@ -71,11 +101,24 @@ define(
 							isanswered: false,
 						},
 						fail: notification.exception,
+						done: function () {
+							$("#newannotation_subject").val("");
+							$("#newannotation_text").val("");
+							rerenderAnnotationList(modinstance);
+						}
 					}]);
-					promises[0].done(function () {
-						renderAnnotationList(modinstance);
+				});
+			},
+			deleteAnnotationListener: function () {
+				var modinstance = $("#newannotation_modinstance").val();
+
+				$('.deleteAnnotationButton').on('click', function () {
+					var annotationid = $(this).attr('annotationid');
+					deleteAnnotation(annotationid).done(function () {
+						rerenderAnnotationList(modinstance);
 					});
 				});
-			}
+			},
 		};
 	});
+

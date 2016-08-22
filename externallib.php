@@ -62,6 +62,57 @@ class mod_videoannotations_external extends external_api {
 	}
 	
 	//
+	// Delete annotation
+	//
+	public static function delete_annotation_parameters() {
+		return new external_function_parameters ( array (
+				// a external_description can be: external_value, external_single_structure or external_multiple structure
+				'annotationid' => new external_value ( PARAM_INT, 'The id of the commented annotation' )
+		) );
+	}
+	public static function delete_annotation_returns() {
+		return new external_single_structure(array());
+		/*
+		return new external_single_structure ( array (
+				'id' => new external_value ( PARAM_INT, 'The id of the newly created comment' )
+		) );
+		*/
+	}
+	public static function delete_annotation($annotationid) {
+		global $DB;
+		$array = array('annotationid' => $annotationid);
+		// Parameters validation
+		$params = self::validate_parameters ( self::delete_annotation_parameters(), $array );
+	
+		// Context validation
+		$cmid = self::get_cmid_by_instance ( $params ['annotationinstance'] );
+		$context = context_module::instance ( $cmid );
+		self::validate_context ( $context );
+	
+		// Capability validation
+		require_capability ( 'mod/videoannotations:deleteannotation', $context );
+	
+		// Does the annotation exist?
+		if (! $DB->record_exists ( 'videoannotations_annotations', array (
+				'id' => $params ['annotationid']
+		) )) {
+			throw new dml_exception ( 'wrongdestpath', 'annotation not found', 'The annotation with the id ' . $params ['annotationid'] . ' does not exist' );
+		}
+		
+		// Delete annotations
+		$DB->delete_records( 'videoannotations_annotations', array ('id' => $params ['annotationid']));
+		
+		// delete comments
+		$DB->delete_records( 'videoannotations_comments', array ('annotationid' => $params ['annotationid']));
+		// delete likes
+		$DB->delete_records( 'videoannotations_likes', array ('referencetotype' => 'annotation', 'foreignkey' => $params ['annotationid']));
+	
+		// Insert and return
+		return array();
+	}
+	
+	
+	//
 	// Get comments for annotation
 	//
 	public static function get_comments_parameters() {
