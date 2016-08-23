@@ -24,7 +24,7 @@
 						Kommentieren{{/ pix}}</button>
 					<button class="btn">{{# pix}} i/edit, core, Bearbeiten{{/
 						pix}}</button>
-					<button class="btn">{{# pix}} i/invalid, core, {{# str }} delete {{/ str }} {{/
+					<button class="btn deletecommentbutton" commentid="{{id}}">{{# pix}} i/invalid, core, {{# str }} delete {{/ str }} {{/
 						pix}}</button>
 					<button class="btn">{{# pix}} i/info, core, Info{{/ pix}}</button>
 				</div>
@@ -33,6 +33,22 @@
 			</div>
 		</div>
 		{{/comments}}
+		<div class="row-fluid">
+			<div class="span1"></div>
+			<div class="span11 well well-small">
+			<h6>Antworten auf {{id}}</h6>
+				<fieldset>
+					<input type="hidden" name="new_commentannotationid" value="{{id}}">
+					<span class="span1">Text:</span> 
+					<span class="span10">
+						<textarea id="newcomment_text_{{id}}" style="width: 100%;" name="newcomment_text"></textarea>
+					</span> 
+					<br />
+					<button id="newcomment_button_{{id}}" class="btn pull-right createnewcomment">{{# pix}} t/add, core,
+						Anlegen{{/ pix}} Anlegen</button>
+				</fieldset>
+			</div>
+		</div>
 	</div>
 	{{/annotations}}
 </div>
@@ -40,5 +56,7 @@
 {{#js}}
     require(['mod_videoannotations/annotations'], function(a) {
         a.deleteAnnotationListener();
+        a.deleteCommentListener();
+		a.createNewCommentListener();
     });
 {{/js}}

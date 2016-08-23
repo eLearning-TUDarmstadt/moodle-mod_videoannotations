@@ -87,7 +87,7 @@ define(
 		*/
 		var setLoaderVisible = function (id) {
 			var loader = $("#" + id);
-			console.log(loader);
+			//console.log(loader);
 			loader.css("visibility", "visible");
 		};
 
@@ -151,6 +151,45 @@ define(
 					});
 				});
 			},
+
+			deleteCommentListener: function() {
+				var modinstance = $("#newannotation_modinstance").val();
+				$('.deletecommentbutton').on('click', function() {
+					var commentid =  $(this).attr("commentid");
+
+					ajax.call([{
+						methodname: 'mod_videoannotations_delete_comment',
+						args: {
+							commentid: commentid,
+						},
+						fail: notification.exception,
+						done: function () {
+							rerenderAnnotationList(modinstance);
+						}
+					}]);
+				});
+			},
+
+			createNewCommentListener: function () {
+				var modinstance = $("#newannotation_modinstance").val();
+				$('.createnewcomment').on('click', function (e) {
+					var annotationid = $(this).attr("id").replace("newcomment_button_", "");
+					var text = $("#newcomment_text_" + annotationid).val();
+
+					ajax.call([{
+						methodname: 'mod_videoannotations_create_comment',
+						args: {
+							annotationid: annotationid,
+							text: text,
+						},
+						fail: notification.exception,
+						done: function () {
+							$("#newcomment_text_" + annotationid).val("");
+							rerenderAnnotationList(modinstance);
+						}
+					}]);
+				});
+			}
 		};
 	});
 

@@ -25,11 +25,14 @@ class mod_videoannotations_external extends external_api {
 				'id' => new external_value ( PARAM_INT, 'The id of the newly created comment' ) 
 		) );
 	}
-	public static function create_comment($array) {
+	public static function create_comment($annotationid, $text) {
 		global $DB;
 		
 		// Parameters validation
-		$params = self::validate_parameters ( self::create_comment_parameters (), $array );
+		$params = self::validate_parameters ( self::create_comment_parameters (), array (
+				'annotationid' => $annotationid,
+				'text' => $text 
+		) );
 		
 		// Context validation
 		$cmid = self::get_cmid_by_instance ( $params ['annotationinstance'] );
@@ -58,7 +61,59 @@ class mod_videoannotations_external extends external_api {
 		$data->timemodified = time ();
 		
 		// Insert and return
-		return $DB->insert_record ( 'videoannotations_comments', $data );
+		return array (
+				'id' => $DB->insert_record ( 'videoannotations_comments', $data ) 
+		);
+	}
+	
+	// Delete comment
+	public static function delete_comment_parameters() {
+		return new external_function_parameters ( array (
+				// a external_description can be: external_value, external_single_structure or external_multiple structure
+				'commentid' => new external_value ( PARAM_INT, 'The id of the comment' ) 
+		) );
+	}
+	public static function delete_comment_returns() {
+		return new external_single_structure ( array () );
+	}
+	public static function delete_comment($commentid) {
+		global $DB;
+		$array = array (
+				'commentid' => $commentid 
+		);
+		// Parameters validation
+		$params = self::validate_parameters ( self::delete_comment_parameters (), $array );
+		
+		// Does the comment exist?
+		if (! $DB->record_exists ( 'videoannotations_comments', array (
+				'id' => $params ['commentid']
+		) )) {
+			throw new dml_exception ( 'wrongdestpath', 'annotation not found', 'The comment with the id ' . $params ['commentid'] . ' does not exist' );
+		}
+		
+		$annotationinstance = $DB->get_field('videoannotations_comments', 'annotationid', array ('id' => $params ['commentid']), MUST_EXIST);
+		
+		// Context validation
+		$cmid = self::get_cmid_by_instance ( $annotationinstance );
+		$context = context_module::instance ( $cmid );
+		self::validate_context ( $context );
+		
+		// Capability validation - using the same cap when deleting an annotation
+		require_capability ( 'mod/videoannotations:deleteannotation', $context );
+				
+		
+		// delete comments
+		$DB->delete_records ( 'videoannotations_comments', array (
+				'id' => $params ['commentid'] 
+		) );
+		// delete likes
+		$DB->delete_records ( 'videoannotations_likes', array (
+				'referencetotype' => 'comment',
+				'foreignkey' => $params ['commentid'] 
+		) );
+		
+		// Insert and return
+		return array ();
 	}
 	
 	//
@@ -67,50 +122,53 @@ class mod_videoannotations_external extends external_api {
 	public static function delete_annotation_parameters() {
 		return new external_function_parameters ( array (
 				// a external_description can be: external_value, external_single_structure or external_multiple structure
-				'annotationid' => new external_value ( PARAM_INT, 'The id of the commented annotation' )
+				'annotationid' => new external_value ( PARAM_INT, 'The id of the commented annotation' ) 
 		) );
 	}
 	public static function delete_annotation_returns() {
-		return new external_single_structure(array());
-		/*
-		return new external_single_structure ( array (
-				'id' => new external_value ( PARAM_INT, 'The id of the newly created comment' )
-		) );
-		*/
+		return new external_single_structure ( array () );
 	}
 	public static function delete_annotation($annotationid) {
 		global $DB;
-		$array = array('annotationid' => $annotationid);
+		$array = array (
+				'annotationid' => $annotationid 
+		);
 		// Parameters validation
-		$params = self::validate_parameters ( self::delete_annotation_parameters(), $array );
-	
+		$params = self::validate_parameters ( self::delete_annotation_parameters (), $array );
+		
 		// Context validation
 		$cmid = self::get_cmid_by_instance ( $params ['annotationinstance'] );
 		$context = context_module::instance ( $cmid );
 		self::validate_context ( $context );
-	
+		
 		// Capability validation
 		require_capability ( 'mod/videoannotations:deleteannotation', $context );
-	
+		
 		// Does the annotation exist?
 		if (! $DB->record_exists ( 'videoannotations_annotations', array (
-				'id' => $params ['annotationid']
+				'id' => $params ['annotationid'] 
 		) )) {
 			throw new dml_exception ( 'wrongdestpath', 'annotation not found', 'The annotation with the id ' . $params ['annotationid'] . ' does not exist' );
 		}
 		
 		// Delete annotations
-		$DB->delete_records( 'videoannotations_annotations', array ('id' => $params ['annotationid']));
+		$DB->delete_records ( 'videoannotations_annotations', array (
+				'id' => $params ['annotationid'] 
+		) );
 		
 		// delete comments
-		$DB->delete_records( 'videoannotations_comments', array ('annotationid' => $params ['annotationid']));
+		$DB->delete_records ( 'videoannotations_comments', array (
+				'annotationid' => $params ['annotationid'] 
+		) );
 		// delete likes
-		$DB->delete_records( 'videoannotations_likes', array ('referencetotype' => 'annotation', 'foreignkey' => $params ['annotationid']));
-	
+		$DB->delete_records ( 'videoannotations_likes', array (
+				'referencetotype' => 'annotation',
+				'foreignkey' => $params ['annotationid'] 
+		) );
+		
 		// Insert and return
-		return array();
+		return array ();
 	}
-	
 	
 	//
 	// Get comments for annotation
@@ -155,7 +213,7 @@ class mod_videoannotations_external extends external_api {
 	//
 	/**
 	 * Returns description of method parameters
-	 * 
+	 *
 	 * @return external_function_parameters
 	 */
 	public static function create_annotation_parameters() {
@@ -170,14 +228,14 @@ class mod_videoannotations_external extends external_api {
 				'text' => new external_value ( PARAM_RAW, 'The text of the annotation' ),
 				'isquestion' => new external_value ( PARAM_BOOL, 'Is this annotation a question?' ),
 				'isanswered' => new external_value ( PARAM_BOOL, 'Is this question answered?' ) 
-		)
+		) )
 		// 'group' => new external_value(PARAM_INT, 'Group id', VALUE_OPTIONAL)
-		 );
+		;
 	}
 	
 	/**
 	 * Returns description of method result value
-	 * 
+	 *
 	 * @return external_description
 	 */
 	public static function create_annotation_returns() {
@@ -188,19 +246,19 @@ class mod_videoannotations_external extends external_api {
 	
 	/**
 	 * Creates an annotation
-	 * 
+	 *
 	 * @return int The id of the newly created annotation
 	 */
 	public static function create_annotation($annotationinstance, $timeposition, $duration, $subject, $text, $isquestion, $isanswered) {
-		$array = array(
+		$array = array (
 				'annotationinstance' => $annotationinstance,
 				'timeposition' => $timeposition,
 				'duration' => $duration,
 				'subject' => $subject,
 				'text' => $text,
 				'isquestion' => $isquestion,
-				'isanswered' => $isanswered
-				);
+				'isanswered' => $isanswered 
+		);
 		// Parameters validation
 		$params = self::validate_parameters ( self::create_annotation_parameters (), $array );
 		
@@ -232,12 +290,14 @@ class mod_videoannotations_external extends external_api {
 		// Insert and return
 		global $DB;
 		$id = $DB->insert_record ( 'videoannotations_annotations', $data );
-		return array('id' => $id);
+		return array (
+				'id' => $id 
+		);
 	}
 	
 	/**
 	 * Returns description of method parameters
-	 * 
+	 *
 	 * @return external_function_parameters
 	 */
 	public static function get_annotations_parameters() {
@@ -252,7 +312,7 @@ class mod_videoannotations_external extends external_api {
 	
 	/**
 	 * The function itself
-	 * 
+	 *
 	 * @return string welcome message
 	 */
 	public static function get_annotations($instance) {
@@ -284,7 +344,7 @@ class mod_videoannotations_external extends external_api {
 	
 	/**
 	 * Returns description of method result value
-	 * 
+	 *
 	 * @return external_description
 	 */
 	public static function get_annotations_returns() {
