@@ -4,6 +4,12 @@
 	{{#annotations}}
 	<div class="well annotation">
 		<div class="btn-group pull-right">
+			{{#likedbyuser}}
+				<button class="btn unlikebutton" type="annotation" fk="{{id}}">{{# pix}} i/flagged, core, Unlike!{{/pix}}</button>
+			{{/likedbyuser}}
+			{{^likedbyuser}}
+			<button class="btn likebutton" type="annotation" fk="{{id}}">{{# pix}} i/unflagged, core, Like!{{/pix}}</button>
+			{{/likedbyuser}}
 			{{#isuserallowedtoedit}}
 			<button class="btn">{{# pix}} i/edit, core, {{# str }}edit{{/ str }}{{/
 				pix}}</button>
@@ -22,6 +28,14 @@
 			<div class="span1"></div>
 			<div class="span11 well well-small">
 				<div class="btn-group pull-right">
+					{{#likedbyuser}}
+					<button class="btn unlikebutton" type="comment" fk="{{id}}">{{# pix}} i/flagged, core, Unlike!{{/
+						pix}}</button>
+					{{/likedbyuser}}
+					{{^likedbyuser}}
+					<button class="btn likebutton" type="comment" fk="{{id}}">{{# pix}} i/unflagged, core, Like!{{/
+						pix}}</button>
+					{{/likedbyuser}}
 					{{#isuserallowedtoedit}}
 					<button class="btn">{{# pix}} i/edit, core, Bearbeiten{{/
 						pix}}</button>
@@ -40,7 +54,7 @@
 		<div class="row-fluid">
 			<div class="span1"></div>
 			<div class="span11 well well-small">
-			<h6>Antworten auf {{id}}</h6>
+			<h6>Antworten</h6>
 				<fieldset>
 					<input type="hidden" name="new_commentannotationid" value="{{id}}">
 					<span class="span1">Text:</span> 
@@ -62,5 +76,7 @@
         a.deleteAnnotationListener();
         a.deleteCommentListener();
 		a.createNewCommentListener();
+		a.likeListener();
+		a.unlikeListener();
     });
 {{/js}}

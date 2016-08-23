@@ -186,6 +186,49 @@ define(
 						}
 					}]);
 				});
+			},
+
+			likeListener: function() {
+				var modinstance = $("#newannotation_modinstance").val();
+				$(".likebutton").on('click', function() {
+					var type = $(this).attr("type");
+					var fk = $(this).attr("fk");
+					ajax.call([{
+						methodname: 'mod_videoannotations_like',
+						args: {
+							annotationinstance: modinstance,
+							referencetotype: type,
+							foreignkey: fk
+						},
+						fail: notification.exception,
+						done: function () {
+							rerenderAnnotationList(modinstance);
+						}
+					}]);
+
+				});
+			},
+			unlikeListener: function() {
+				var modinstance = $("#newannotation_modinstance").val();
+				$(".unlikebutton").on('click', function() {
+					
+				console.log("Unlike button pressed!");
+					var type = $(this).attr("type");
+					var fk = $(this).attr("fk");
+					ajax.call([{
+						methodname: 'mod_videoannotations_unlike',
+						args: {
+							annotationinstance: modinstance,
+							referencetotype: type,
+							foreignkey: fk
+						},
+						fail: notification.exception,
+						done: function () {
+							rerenderAnnotationList(modinstance);
+						}
+					}]);
+
+				});
 			}
 		};
 	});

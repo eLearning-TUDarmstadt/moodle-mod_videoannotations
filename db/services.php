@@ -74,4 +74,22 @@ $functions = array(
         'ajax'        => true
         //'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE)    // Optional, only available for Moodle 3.1 onwards. List of built-in services (by shortname) where the function will be included.  Services created manually via the Moodle interface are not supported.
     ),
+		'mod_videoannotations_like' => array(         //web service function name
+				'classname'   => 'mod_videoannotations_external',  //class containing the external function
+				'methodname'  => 'like',          //external function name
+				'classpath'   => 'mod/videoannotations/externallib.php',  //file containing the class/external function
+				'description' => 'Like an annotation or comment',    //human readable description of the web service function
+				'type'        => 'write',                  //database rights of the web service function (read, write)
+				'ajax'        => true
+				//'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE)    // Optional, only available for Moodle 3.1 onwards. List of built-in services (by shortname) where the function will be included.  Services created manually via the Moodle interface are not supported.
+		),
+		'mod_videoannotations_unlike' => array(         //web service function name
+				'classname'   => 'mod_videoannotations_external',  //class containing the external function
+				'methodname'  => 'unlike',          //external function name
+				'classpath'   => 'mod/videoannotations/externallib.php',  //file containing the class/external function
+				'description' => 'Like an annotation or comment',    //human readable description of the web service function
+				'type'        => 'write',                  //database rights of the web service function (read, write)
+				'ajax'        => true
+				//'services' => array(MOODLE_OFFICIAL_MOBILE_SERVICE)    // Optional, only available for Moodle 3.1 onwards. List of built-in services (by shortname) where the function will be included.  Services created manually via the Moodle interface are not supported.
+		),
 );
