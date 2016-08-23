@@ -69,10 +69,7 @@ define(
 			ajax.call([{
 				methodname: 'mod_videoannotations_delete_annotation',
 				args: { annotationid: id },
-				fail: function () {
-					//notification.exception;
-					d.reject();
-				},
+				fail: notification.exception,
 				done: function () {
 					d.resolve();
 				}

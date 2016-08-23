@@ -4,12 +4,14 @@
 	{{#annotations}}
 	<div class="well annotation">
 		<div class="btn-group pull-right">
-			<button class="btn">{{# pix}} i/feedback, core,
-				Kommentieren{{/ pix}}</button>
+			{{#isuserallowedtoedit}}
 			<button class="btn">{{# pix}} i/edit, core, {{# str }}edit{{/ str }}{{/
 				pix}}</button>
+			{{/isuserallowedtoedit}}
+			{{#isuserallowedtodelete}}
 			<button class="btn deleteAnnotationButton" annotationid={{id}}>{{# pix}} i/invalid, core, {{# str }}delete{{/ str }}{{/
 				pix}}</button>
+			{{/isuserallowedtodelete}}
 			<button class="btn">{{# pix}} i/info, core, Info{{/ pix}}</button>
 		</div>
 		<h5>{{author_firstname}} {{author_lastname}}:</h5>
@@ -20,12 +22,14 @@
 			<div class="span1"></div>
 			<div class="span11 well well-small">
 				<div class="btn-group pull-right">
-					<button class="btn">{{# pix}} t/message, core,
-						Kommentieren{{/ pix}}</button>
+					{{#isuserallowedtoedit}}
 					<button class="btn">{{# pix}} i/edit, core, Bearbeiten{{/
 						pix}}</button>
+					{{/isuserallowedtoedit}}
+					{{#isuserallowedtodelete}}
 					<button class="btn deletecommentbutton" commentid="{{id}}">{{# pix}} i/invalid, core, {{# str }} delete {{/ str }} {{/
 						pix}}</button>
+					{{/isuserallowedtodelete}}
 					<button class="btn">{{# pix}} i/info, core, Info{{/ pix}}</button>
 				</div>
 				<h6>{{author_firstname}} {{author_lastname}}:</h6>
@@ -45,7 +49,7 @@
 					</span> 
 					<br />
 					<button id="newcomment_button_{{id}}" class="btn pull-right createnewcomment">{{# pix}} t/add, core,
-						Anlegen{{/ pix}} Anlegen</button>
+						Kommentieren{{/ pix}} Kommentieren</button>
 				</fieldset>
 			</div>
 		</div>

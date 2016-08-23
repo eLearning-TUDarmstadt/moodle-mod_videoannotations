@@ -187,7 +187,9 @@ class mod_videoannotations_external extends external_api {
 				'author_firstname' => new external_value ( PARAM_TEXT, 'the authors firstname' ),
 				'author_lastname' => new external_value ( PARAM_TEXT, 'the authors lastname' ),
 				'timecreated' => new external_value ( PARAM_INT, 'the unix creation timestamp' ),
-				'timemodified' => new external_value ( PARAM_INT, 'the unix last change timestamp' ) 
+				'timemodified' => new external_value ( PARAM_INT, 'the unix last change timestamp' ),
+				'isuserallowedtoedit' => new external_value ( PARAM_BOOL, 'is the user allowed to edit this annotation?' ),
+				'isuserallowedtodelete' => new external_value ( PARAM_BOOL, 'is the user allowed to delete this annotation?' ),
 		) ) );
 	}
 	public static function get_comments($array) {
@@ -204,7 +206,17 @@ class mod_videoannotations_external extends external_api {
 		require_capability ( 'mod/videoannotations:readcomments', $context );
 		
 		$sql = "SELECT " . "vc.id," . "vc.text," . "vc.author," . "vc.timecreated," . "vc.timemodified," . "u.firstname as author_firstname," . "u.lastname as author_lastname " . "FROM {videoannotations_comments} vc, {user} u " . "WHERE vc.author = u.id AND annotationid = " . $params ['annotationid'];
-		return $DB->get_records_sql ( $sql );
+		
+		$isuserallowedtoedit = has_capability('mod/videoannotations:deleteannotation', $context) ? 1 : 0;
+		$isuserallowedtodelete = has_capability('mod/videoannotations:editannotation', $context) ? 1 : 0;
+		
+		$comments = $DB->get_records_sql ( $sql );
+		
+		foreach ($comments as $id => $comment) {
+			$comments[$id]->isuserallowedtoedit = $isuserallowedtoedit;
+			$comments[$id]->isuserallowedtodelete = $isuserallowedtodelete;
+		}
+		return $comments;
 		// return $DB->get_records('videoannotations_comments', array('annotationid' => $params['annotationid']), null, 'id,text,author,timecreated,timemodified');
 	}
 	
@@ -326,13 +338,19 @@ class mod_videoannotations_external extends external_api {
 		$context = context_module::instance ( $cmid );
 		self::validate_context ( $context );
 		
-		global $DB;
+		global $DB, $CFG;
 		
 		$sql = "SELECT " . "va.id, " . "va.annotationinstance, " . "va.timeposition, " . "va.duration, " . "va.group, " . "va.subject, " . "va.text, " . "va.isquestion, " . "va.isanswered, " . "va.author, " . "va.timecreated, " . "va.timemodified, " . "u.firstname AS author_firstname, " . "u.lastname AS author_lastname " . "FROM {videoannotations_annotations} va, {user} u " . "WHERE va.author = u.id AND va.annotationinstance = " . $params ['id'];
 		
 		$annotations = $DB->get_records_sql ( $sql );
 		
+		require_once $CFG->libdir . '/accesslib.php';
+		$isuserallowedtoedit = has_capability('mod/videoannotations:deleteannotation', $context) ? 1 : 0;
+		$isuserallowedtodelete = has_capability('mod/videoannotations:editannotation', $context) ? 1 : 0;
 		foreach ( $annotations as $id => $annotation ) {
+			$annotations [$id]->isuserallowedtoedit = $isuserallowedtoedit;
+			$annotations [$id]->isuserallowedtodelete = $isuserallowedtodelete;
+				
 			$annotations [$id]->comments = self::get_comments ( array (
 					'annotationid' => $id 
 			) );
@@ -357,6 +375,8 @@ class mod_videoannotations_external extends external_api {
 				'text' => new external_value ( PARAM_RAW, 'the text' ),
 				'isquestion' => new external_value ( PARAM_BOOL, 'is this annotation a question?' ),
 				'isanswered' => new external_value ( PARAM_BOOL, 'if a question, is it answered?' ),
+				'isuserallowedtoedit' => new external_value ( PARAM_BOOL, 'is the user allowed to edit this annotation?' ),
+				'isuserallowedtodelete' => new external_value ( PARAM_BOOL, 'is the user allowed to delete this annotation?' ),
 				'group' => new external_value ( PARAM_INT, 'the group id if written in seperated groups' ),
 				'author' => new external_value ( PARAM_INT, 'the authors user id' ),
 				'author_firstname' => new external_value ( PARAM_TEXT, 'the authors firstname' ),
