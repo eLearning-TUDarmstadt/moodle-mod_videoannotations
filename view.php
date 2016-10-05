@@ -32,6 +32,8 @@ $url = new moodle_url("/mod/videoannotations/apitest.php");
 $PAGE->set_context(context_system::instance());
 $PAGE->set_url($url);
 
+$PAGE->requires->js(new moodle_url('js/rx.all.min.js'));
+
 $id      = optional_param('id', 0, PARAM_INT); // Course Module ID
 $p       = optional_param('p', 0, PARAM_INT);  // videoannotations instance ID
 $inpopup = optional_param('inpopup', 0, PARAM_BOOL);
