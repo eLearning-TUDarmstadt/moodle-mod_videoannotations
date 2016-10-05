@@ -27,9 +27,22 @@
  * @since 2.9
  */
 define(
-	['jquery', 'core/ajax', 'core/templates', 'core/notification', 'jqueryui'],
-	function ($, ajax, templates, notification, jqui) {
-
+	['jquery', 'core/ajax', 'core/templates', 'core/notification', 'jqueryui', 'js/rx.all.min.js'],
+	function ($, ajax, templates, notification, jqui, Rx) {
+		
+		var source = Rx.Observable.fromEvent($('video'), 'timeupdate');
+		
+		var subscription = source.subscribe(
+				  function (x) {
+				    console.log('timeupdate', x);
+				  },
+				  function (err) {
+				    console.log('Error: %s', err);
+				  },
+				  function () {
+				    console.log('Completed');
+				  });
+		
 		var rerenderAnnotationList = function (modinstance) {
 			setLoaderVisible('annotationsloader');
 			$(".annotation").css("visibility", "hidden");
