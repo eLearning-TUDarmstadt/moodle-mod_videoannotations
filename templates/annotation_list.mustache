@@ -1,6 +1,6 @@
 <div id="annotations" data-region="annotation-list">
 	<div id="annotationsloader" style="visibility: hidden; margin: auto; height: 0px; position: relative; left: 50%; transform: translateX(-50%); display: inline-block;">{{# pix}} i/loading, core, {{/pix}}</div>
-	<h3>{{numberOfAnnotations}} Annotationen</h3>
+	<h3>Annotationen</h3>
 	{{#annotations}}
 	<div class="well annotation">
 		<div class="btn-group pull-right">
@@ -72,7 +72,34 @@
 </div>
 
 {{#js}}
-    require(['mod_videoannotations/annotations'], function(a) {
+
+
+    require(['mod_videoannotations/annotations', 'core/ajax', 'jquery', 'core/templates'], function(a, ajax, $, templates) {
+		var modinstance = $("#newannotation_modinstance").val();
+
+		// Get annotations every 2000 ms
+    	var annotations = Rx.Observable
+		.interval(2000)
+		.flatMap(function() {
+			var p = ajax.call([{
+				methodname: 'mod_videoannotations_get_annotations',
+				args: { id: modinstance }
+			}]);
+			return Rx.Observable.fromPromise(p[0]);
+		});
+
+		// Simply redraw list
+		var redrawAnnotations = 
+			annotations.flatMap(function(rawdata) {
+				var data = { numberOfAnnotations: rawdata.length, annotations: rawdata };
+				return Rx.Observable.fromPromise(templates.render('mod_videoannotations/annotation_list', data));
+			})
+			.subscribe(function(html, js) {
+				console.log(html);
+				$('[data-region="annotation-list"]').replaceWith(html);
+			});
+
+
         a.deleteAnnotationListener();
         a.deleteCommentListener();
 		a.createNewCommentListener();
