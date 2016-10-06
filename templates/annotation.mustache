@@ -1,0 +1,66 @@
+<div class="well annotation" id="annotation-id-{{id}}">
+		<div class="btn-group pull-right">
+			{{#likedbyuser}}
+				<button class="btn unlikebutton" type="annotation" fk="{{id}}">{{# pix}} i/flagged, core, Unlike!{{/pix}}</button>
+			{{/likedbyuser}}
+			{{^likedbyuser}}
+			<button class="btn likebutton" type="annotation" fk="{{id}}">{{# pix}} i/unflagged, core, Like!{{/pix}}</button>
+			{{/likedbyuser}}
+			{{#isuserallowedtoedit}}
+			<button class="btn">{{# pix}} i/edit, core, {{# str }}edit{{/ str }}{{/
+				pix}}</button>
+			{{/isuserallowedtoedit}}
+			{{#isuserallowedtodelete}}
+			<button class="btn deleteAnnotationButton" annotationid={{id}}>{{# pix}} i/invalid, core, {{# str }}delete{{/ str }}{{/
+				pix}}</button>
+			{{/isuserallowedtodelete}}
+			<button class="btn">{{# pix}} i/info, core, Info{{/ pix}}</button>
+		</div>
+		<h5>{{author_firstname}} {{author_lastname}}:</h5>
+		<h4>{{subject}}</h4>
+		<p>{{{text}}}</p>
+		<br /> {{#comments}}
+		<div class="row-fluid">
+			<div class="span1"></div>
+			<div class="span11 well well-small">
+				<div class="btn-group pull-right">
+					{{#likedbyuser}}
+					<button class="btn unlikebutton" type="comment" fk="{{id}}">{{# pix}} i/flagged, core, Unlike!{{/
+						pix}}</button>
+					{{/likedbyuser}}
+					{{^likedbyuser}}
+					<button class="btn likebutton" type="comment" fk="{{id}}">{{# pix}} i/unflagged, core, Like!{{/
+						pix}}</button>
+					{{/likedbyuser}}
+					{{#isuserallowedtoedit}}
+					<button class="btn">{{# pix}} i/edit, core, Bearbeiten{{/
+						pix}}</button>
+					{{/isuserallowedtoedit}}
+					{{#isuserallowedtodelete}}
+					<button class="btn deletecommentbutton" commentid="{{id}}">{{# pix}} i/invalid, core, {{# str }} delete {{/ str }} {{/
+						pix}}</button>
+					{{/isuserallowedtodelete}}
+					<button class="btn">{{# pix}} i/info, core, Info{{/ pix}}</button>
+				</div>
+				<h6>{{author_firstname}} {{author_lastname}}:</h6>
+				{{{text}}}
+			</div>
+		</div>
+		{{/comments}}
+		<div class="row-fluid">
+			<div class="span1"></div>
+			<div class="span11 well well-small">
+			<h6>Antworten</h6>
+				<fieldset>
+					<input type="hidden" name="new_commentannotationid" value="{{id}}">
+					<span class="span1">Text:</span> 
+					<span class="span10">
+						<textarea id="newcomment_text_{{id}}" style="width: 100%;" name="newcomment_text"></textarea>
+					</span> 
+					<br />
+					<button id="newcomment_button_{{id}}" class="btn pull-right createnewcomment">{{# pix}} t/add, core,
+						Kommentieren{{/ pix}} Kommentieren</button>
+				</fieldset>
+			</div>
+		</div>
+	</div>

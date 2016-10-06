@@ -2,72 +2,7 @@
 	<div id="annotationsloader" style="visibility: hidden; margin: auto; height: 0px; position: relative; left: 50%; transform: translateX(-50%); display: inline-block;">{{# pix}} i/loading, core, {{/pix}}</div>
 	<h3>Annotationen</h3>
 	{{#annotations}}
-	<div class="well annotation">
-		<div class="btn-group pull-right">
-			{{#likedbyuser}}
-				<button class="btn unlikebutton" type="annotation" fk="{{id}}">{{# pix}} i/flagged, core, Unlike!{{/pix}}</button>
-			{{/likedbyuser}}
-			{{^likedbyuser}}
-			<button class="btn likebutton" type="annotation" fk="{{id}}">{{# pix}} i/unflagged, core, Like!{{/pix}}</button>
-			{{/likedbyuser}}
-			{{#isuserallowedtoedit}}
-			<button class="btn">{{# pix}} i/edit, core, {{# str }}edit{{/ str }}{{/
-				pix}}</button>
-			{{/isuserallowedtoedit}}
-			{{#isuserallowedtodelete}}
-			<button class="btn deleteAnnotationButton" annotationid={{id}}>{{# pix}} i/invalid, core, {{# str }}delete{{/ str }}{{/
-				pix}}</button>
-			{{/isuserallowedtodelete}}
-			<button class="btn">{{# pix}} i/info, core, Info{{/ pix}}</button>
-		</div>
-		<h5>{{author_firstname}} {{author_lastname}}:</h5>
-		<h4>{{subject}}</h4>
-		<p>{{{text}}}</p>
-		<br /> {{#comments}}
-		<div class="row-fluid">
-			<div class="span1"></div>
-			<div class="span11 well well-small">
-				<div class="btn-group pull-right">
-					{{#likedbyuser}}
-					<button class="btn unlikebutton" type="comment" fk="{{id}}">{{# pix}} i/flagged, core, Unlike!{{/
-						pix}}</button>
-					{{/likedbyuser}}
-					{{^likedbyuser}}
-					<button class="btn likebutton" type="comment" fk="{{id}}">{{# pix}} i/unflagged, core, Like!{{/
-						pix}}</button>
-					{{/likedbyuser}}
-					{{#isuserallowedtoedit}}
-					<button class="btn">{{# pix}} i/edit, core, Bearbeiten{{/
-						pix}}</button>
-					{{/isuserallowedtoedit}}
-					{{#isuserallowedtodelete}}
-					<button class="btn deletecommentbutton" commentid="{{id}}">{{# pix}} i/invalid, core, {{# str }} delete {{/ str }} {{/
-						pix}}</button>
-					{{/isuserallowedtodelete}}
-					<button class="btn">{{# pix}} i/info, core, Info{{/ pix}}</button>
-				</div>
-				<h6>{{author_firstname}} {{author_lastname}}:</h6>
-				{{{text}}}
-			</div>
-		</div>
-		{{/comments}}
-		<div class="row-fluid">
-			<div class="span1"></div>
-			<div class="span11 well well-small">
-			<h6>Antworten</h6>
-				<fieldset>
-					<input type="hidden" name="new_commentannotationid" value="{{id}}">
-					<span class="span1">Text:</span> 
-					<span class="span10">
-						<textarea id="newcomment_text_{{id}}" style="width: 100%;" name="newcomment_text"></textarea>
-					</span> 
-					<br />
-					<button id="newcomment_button_{{id}}" class="btn pull-right createnewcomment">{{# pix}} t/add, core,
-						Kommentieren{{/ pix}} Kommentieren</button>
-				</fieldset>
-			</div>
-		</div>
-	</div>
+		{{> mod_videoannotations/annotation}}
 	{{/annotations}}
 </div>
 
@@ -76,8 +11,7 @@
 
     require(['mod_videoannotations/annotations', 'core/ajax', 'jquery', 'core/templates'], function(a, ajax, $, templates) {
 		var modinstance = $("#newannotation_modinstance").val();
-
-		var timer = Rx.Observable.timer(0,2000);
+		var timer = Rx.Observable.timer(0,1000);
 
 		// Delete Annotationen
 		var deleteButton = Rx.Observable.fromEvent($('.deleteAnnotationButton'), 'click')
@@ -92,7 +26,8 @@
 					args: { annotationid: id }
 				}]);
 				return Rx.Observable.fromPromise(p[0]);
-			});
+			})
+			.startWith(null);
 
 		// Get annotations
     	var annotations = Rx.Observable
@@ -104,20 +39,51 @@
 			}]);
 			return Rx.Observable.fromPromise(p[0]);
 		});
-
-		// Simply redraw list
-		var redrawAnnotations = 
-			annotations.flatMap(function(rawdata) {
-				console.log(rawdata);
-				var data = { numberOfAnnotations: rawdata.length, annotations: rawdata };
-				return Rx.Observable.fromPromise(templates.render('mod_videoannotations/annotation_list', data));
-			})
-			.subscribe(function(html) {
-				$('[data-region="annotation-list"]').replaceWith(html);
-			});
-
 		
-	
+		var newOrModifiedAnnotations = 
+			annotations.flatMap(function(rawdata) {
+				return Rx.Observable.from(rawdata);
+			})
+			.distinct();
+
+		var newAnnotations = 
+			newOrModifiedAnnotations.filter(function(o) {
+				return $('#annotation-id-' + o.id).length === 0;
+			})
+			.flatMap(function(o) {
+				var p = templates.render('mod_videoannotations/annotation', o);
+				return Rx.Observable.fromPromise(p);
+			})
+			.subscribe(function (html) {
+				$("#annotations").append(html);
+			})
+		
+		/*
+		var modifiedAnnotations =
+			newOrModifiedAnnotations.filter(function(o) {
+				return $('#annotation-id-' + o.id).length !== 0;
+			})
+			.flatMap(function (o) {
+				var input = $("#newcomment_text_" + o.id);
+				var selectionStart = input.prop('selectionStart');
+				var selectionEnd = input.prop('selectionEnd');
+				var focus = $(input).is(":focus");
+
+				var p = templates.render('mod_videoannotations/annotation', o);
+
+				p.then(function(html) {
+
+				});
+			})
+			.flatMap(function (obj) {
+				console.log(obj);
+				return Rx.Observable.from(obj);
+			})
+			.subscribe(function (o) {
+				console.log(o);
+			});
+		*/
+	a.createNewCommentListener();
 		
 
 		/*
@@ -131,9 +97,11 @@
 
         a.deleteAnnotationListener();
 		*/
+		/*
         a.deleteCommentListener();
 		a.createNewCommentListener();
 		a.likeListener();
 		a.unlikeListener();
+		*/
     });
 {{/js}}
