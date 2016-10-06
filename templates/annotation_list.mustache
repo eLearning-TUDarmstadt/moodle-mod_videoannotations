@@ -77,9 +77,26 @@
     require(['mod_videoannotations/annotations', 'core/ajax', 'jquery', 'core/templates'], function(a, ajax, $, templates) {
 		var modinstance = $("#newannotation_modinstance").val();
 
-		// Get annotations every 2000 ms
+		var timer = Rx.Observable.timer(0,2000);
+
+		// Delete Annotationen
+		var deleteButton = Rx.Observable.fromEvent($('.deleteAnnotationButton'), 'click')
+			.pluck('currentTarget')
+			.flatMap(btn => {
+				var annotationId = $(btn).attr('annotationid');
+				return Rx.Observable.from([annotationId]);
+			})
+			.flatMap(id => {
+				var p = ajax.call([{
+					methodname: 'mod_videoannotations_delete_annotation',
+					args: { annotationid: id }
+				}]);
+				return Rx.Observable.fromPromise(p[0]);
+			});
+
+		// Get annotations
     	var annotations = Rx.Observable
-		.interval(2000)
+		.combineLatest(timer, deleteButton)
 		.flatMap(function() {
 			var p = ajax.call([{
 				methodname: 'mod_videoannotations_get_annotations',
@@ -91,16 +108,29 @@
 		// Simply redraw list
 		var redrawAnnotations = 
 			annotations.flatMap(function(rawdata) {
+				console.log(rawdata);
 				var data = { numberOfAnnotations: rawdata.length, annotations: rawdata };
 				return Rx.Observable.fromPromise(templates.render('mod_videoannotations/annotation_list', data));
 			})
-			.subscribe(function(html, js) {
-				console.log(html);
+			.subscribe(function(html) {
 				$('[data-region="annotation-list"]').replaceWith(html);
 			});
 
+		
+	
+		
+
+		/*
+		var modinstance = $("#newannotation_modinstance").val();
+
+				.on('click', function () {
+					deleteAnnotation(annotationid).done(function () {
+						rerenderAnnotationList(modinstance);
+					});
+				});
 
         a.deleteAnnotationListener();
+		*/
         a.deleteCommentListener();
 		a.createNewCommentListener();
 		a.likeListener();
