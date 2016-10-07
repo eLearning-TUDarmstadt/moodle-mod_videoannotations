@@ -30,19 +30,7 @@ define(
 	['jquery', 'core/ajax', 'core/templates', 'core/notification', 'jqueryui', 'js/rx.all.min.js'],
 	function ($, ajax, templates, notification, jqui, Rx) {
 		
-		var source = Rx.Observable.fromEvent($('video'), 'timeupdate');
-		
-		var subscription = source.subscribe(
-				  function (x) {
-				    console.log('timeupdate', x);
-				  },
-				  function (err) {
-				    console.log('Error: %s', err);
-				  },
-				  function () {
-				    console.log('Completed');
-				  });
-		
+		/*
 		var rerenderAnnotationList = function (modinstance) {
 			setLoaderVisible('annotationsloader');
 			$(".annotation").css("visibility", "hidden");
@@ -74,6 +62,7 @@ define(
 			});
 			return d.promise();
 		};
+		*/
 
 
 		var deleteAnnotation = function (id) {
@@ -146,7 +135,7 @@ define(
 						done: function () {
 							$("#newannotation_subject").val("");
 							$("#newannotation_text").val("");
-							rerenderAnnotationList(modinstance);
+							//rerenderAnnotationList(modinstance);
 						}
 					}]);
 				});
@@ -157,7 +146,7 @@ define(
 				$('.deleteAnnotationButton').on('click', function () {
 					var annotationid = $(this).attr('annotationid');
 					deleteAnnotation(annotationid).done(function () {
-						rerenderAnnotationList(modinstance);
+						//rerenderAnnotationList(modinstance);
 					});
 				});
 			},
@@ -174,7 +163,7 @@ define(
 						},
 						fail: notification.exception,
 						done: function () {
-							rerenderAnnotationList(modinstance);
+							//rerenderAnnotationList(modinstance);
 						}
 					}]);
 				});
@@ -182,7 +171,7 @@ define(
 
 			createNewCommentListener: function () {
 				var modinstance = $("#newannotation_modinstance").val();
-				$('.createnewcomment').on('click', function (e) {
+				$('.createnewcomment').unbind('click').on('click', function (e) {
 					var annotationid = $(this).attr("id").replace("newcomment_button_", "");
 					var text = $("#newcomment_text_" + annotationid).val();
 
@@ -195,7 +184,7 @@ define(
 						fail: notification.exception,
 						done: function () {
 							$("#newcomment_text_" + annotationid).val("");
-							rerenderAnnotationList(modinstance);
+							//rerenderAnnotationList(modinstance);
 						}
 					}]);
 				});
@@ -215,7 +204,7 @@ define(
 						},
 						fail: notification.exception,
 						done: function () {
-							rerenderAnnotationList(modinstance);
+							//rerenderAnnotationList(modinstance);
 						}
 					}]);
 
@@ -237,7 +226,7 @@ define(
 						},
 						fail: notification.exception,
 						done: function () {
-							rerenderAnnotationList(modinstance);
+							//rerenderAnnotationList(modinstance);
 						}
 					}]);
 

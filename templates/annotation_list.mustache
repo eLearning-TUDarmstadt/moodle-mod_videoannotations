@@ -9,7 +9,7 @@
 {{#js}}
 
 
-    require(['mod_videoannotations/annotations', 'core/ajax', 'jquery', 'core/templates'], function(a, ajax, $, templates) {
+    require(['mod_videoannotations/annotations', 'core/ajax', 'jquery', 'core/templates', 'js/rx.all.min.js'], function(annotationsScript, ajax, $, templates, Rx) {
 		var modinstance = $("#newannotation_modinstance").val();
 		var timer = Rx.Observable.timer(0,1000);
 
@@ -51,39 +51,46 @@
 				return $('#annotation-id-' + o.id).length === 0;
 			})
 			.flatMap(function(o) {
-				var p = templates.render('mod_videoannotations/annotation', o);
+				var p = templates.render('mod_videoannotations/annotation', $.extend(true, {}, o));
 				return Rx.Observable.fromPromise(p);
 			})
 			.subscribe(function (html) {
 				$("#annotations").append(html);
 			})
 		
-		/*
-		var modifiedAnnotations =
-			newOrModifiedAnnotations.filter(function(o) {
+		var modifiedAnnotations = newOrModifiedAnnotations.filter(function(o) {
 				return $('#annotation-id-' + o.id).length !== 0;
-			})
-			.flatMap(function (o) {
-				var input = $("#newcomment_text_" + o.id);
-				var selectionStart = input.prop('selectionStart');
-				var selectionEnd = input.prop('selectionEnd');
-				var focus = $(input).is(":focus");
+		})
+		.subscribe(function(annotation) {
 
-				var p = templates.render('mod_videoannotations/annotation', o);
+			console.log('modified', annotation.id);
 
-				p.then(function(html) {
+			var input = $("#newcomment_text_" + annotation.id);
+			var selectionStart = input.prop('selectionStart');
+			var selectionEnd = input.prop('selectionEnd');
+			var focus = $(input).is(":focus");
+			var status = {
+				content : input.val(),
+			 	selection : { start : selectionStart, end : selectionEnd },
+			 	focused : focus
+			};
 
-				});
-			})
-			.flatMap(function (obj) {
-				console.log(obj);
-				return Rx.Observable.from(obj);
-			})
-			.subscribe(function (o) {
-				console.log(o);
+			var p = templates.render('mod_videoannotations/annotation', $.extend(true, {}, annotation));
+			
+			p.then(function(html) {
+				$('#annotation-id-' + annotation.id).replaceWith(html);
+			 	annotationsScript.createNewCommentListener();
+				var i = $("#newcomment_text_" + annotation.id);
+				i.val(status.content); 
+			 	i.prop('selectionStart', status.selection.start);
+			 	i.prop('selectionEnd', status.selection.end);
+			 	if(status.focused) i.focus();
 			});
-		*/
-	a.createNewCommentListener();
+			
+		});
+		
+		
+		annotationsScript.createNewCommentListener();
 		
 
 		/*

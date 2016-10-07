@@ -95,9 +95,9 @@ $obj = $data;
 echo $OUTPUT->header();
 $renderable = new \mod_videoannotations\output\view_page($obj);
 echo $output->render($renderable);
-$annotation_list = new \mod_videoannotations\output\annotation_list($data);
+$annotation_list = new \mod_videoannotations\output\annotation_list(array());
 echo $output->render($annotation_list);
-echo "<h1>DEBUG</h1>";
-echo "<pre>" . print_r($obj, true) . "</pre>";
+//echo "<h1>DEBUG</h1>";
+//echo "<pre>" . print_r($obj, true) . "</pre>";
 
 echo $OUTPUT->footer();
