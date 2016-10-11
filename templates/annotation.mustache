@@ -19,33 +19,9 @@
 		<h5>{{author_firstname}} {{author_lastname}}:</h5>
 		<h4>{{subject}}</h4>
 		<p>{{{text}}}</p>
-		<br /> {{#comments}}
-		<div class="row-fluid">
-			<div class="span1"></div>
-			<div class="span11 well well-small">
-				<div class="btn-group pull-right">
-					{{#likedbyuser}}
-					<button class="btn unlikebutton" type="comment" fk="{{id}}">{{# pix}} i/flagged, core, Unlike!{{/
-						pix}}</button>
-					{{/likedbyuser}}
-					{{^likedbyuser}}
-					<button class="btn likebutton" type="comment" fk="{{id}}">{{# pix}} i/unflagged, core, Like!{{/
-						pix}}</button>
-					{{/likedbyuser}}
-					{{#isuserallowedtoedit}}
-					<button class="btn">{{# pix}} i/edit, core, Bearbeiten{{/
-						pix}}</button>
-					{{/isuserallowedtoedit}}
-					{{#isuserallowedtodelete}}
-					<button class="btn deletecommentbutton" commentid="{{id}}">{{# pix}} i/invalid, core, {{# str }} delete {{/ str }} {{/
-						pix}}</button>
-					{{/isuserallowedtodelete}}
-					<button class="btn">{{# pix}} i/info, core, Info{{/ pix}}</button>
-				</div>
-				<h6>{{author_firstname}} {{author_lastname}}:</h6>
-				{{{text}}}
-			</div>
-		</div>
+		<br /> 
+		{{#comments}}
+			{{> mod_videoannotations/comment}}
 		{{/comments}}
 		<div class="row-fluid">
 			<div class="span1"></div>
@@ -64,3 +40,9 @@
 			</div>
 		</div>
 	</div>
+{{#js}}
+   require(['mod_videoannotations/annotations'], 
+	function(annotationsScript) {
+		//annotationsScript.run();
+	});
+{{/js}}

@@ -33,6 +33,8 @@ $PAGE->set_context(context_system::instance());
 $PAGE->set_url($url);
 
 $PAGE->requires->js(new moodle_url('js/rx.all.min.js'));
+//$PAGE->requires->js(new moodle_url('amd/src/annotations.js'));
+//$PAGE->requires->js(new moodle_url('amd/build/annotations.min.js'));
 
 $id      = optional_param('id', 0, PARAM_INT); // Course Module ID
 $p       = optional_param('p', 0, PARAM_INT);  // videoannotations instance ID
@@ -90,13 +92,13 @@ $data = [
 ];
 
 
-//$obj = json_decode(json_encode($data));
-$obj = $data;
 echo $OUTPUT->header();
-$renderable = new \mod_videoannotations\output\view_page($obj);
+//$data = array();
+$renderable = new \mod_videoannotations\output\view_page($data);
 echo $output->render($renderable);
-$annotation_list = new \mod_videoannotations\output\annotation_list(array());
-echo $output->render($annotation_list);
+//$annotation_list = new \mod_videoannotations\output\annotation_list(array());
+//$annotation_list = new \mod_videoannotations\output\annotation_list($data);
+//echo $output->render($annotation_list);
 //echo "<h1>DEBUG</h1>";
 //echo "<pre>" . print_r($obj, true) . "</pre>";
 
