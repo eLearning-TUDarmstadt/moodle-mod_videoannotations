@@ -145,13 +145,17 @@ define(
 		};
 		observablesThatTriggerSubject.subscribe(subject);
 
+		console.log(observablesThatTriggerSubject.subscriptions);
+
 		/**
 		 * Fetches all annotations from server
 		 */
 		var fetchData = subject.share()
+			/*
 			.do(function (x) {
 				console.log(x);
 			})
+			*/
 			.flatMap(function () {
 				var p = ajax.call([{
 					methodname: 'mod_videoannotations_get_annotations',
@@ -161,16 +165,18 @@ define(
 				}]);
 				return Rx.Observable.fromPromise(p[0]).share();
 			})
-			.throttle(150)
+			//.throttle(150)
 			.share();
 
 		var extractNewOrModified = fetchData
 			.flatMap(function (rawdata) {
 				return Rx.Observable.from(rawdata);
 			})
-			.distinct().share();
+			.share();
 
-		var renderNew = extractNewOrModified.filter(function (o) {
+		var renderNew = extractNewOrModified
+			.distinct()
+			.filter(function (o) {
 				return $('#annotation-id-' + o.id).length === 0;
 			})
 			.flatMap(function (o) {
@@ -183,10 +189,12 @@ define(
 				$("#annotations").append(html);
 			});
 
-		var renderModified = extractNewOrModified.filter(function (o) {
-				var annos = $('#annotation-id-' + o.id);
-				return false;
+		var renderModified = extractNewOrModified
+			.filter(function (o) {
+				var length = $('#annotation-id-' + o.id).length;
+				return (length > 0) ? true : false;
 			})
+			.distinct()
 			.flatMap(function (o) {
 				console.log("Found modified:");
 				console.log(o);
