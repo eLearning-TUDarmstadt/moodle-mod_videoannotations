@@ -32,7 +32,7 @@ $url = new moodle_url("/mod/videoannotations/apitest.php");
 $PAGE->set_context(context_system::instance());
 $PAGE->set_url($url);
 
-$PAGE->requires->js(new moodle_url('js/rx.all.min.js'));
+//$PAGE->requires->js(new moodle_url('js/rx.all.js'));
 //$PAGE->requires->js(new moodle_url('amd/src/annotations.js'));
 //$PAGE->requires->js(new moodle_url('amd/build/annotations.min.js'));
 

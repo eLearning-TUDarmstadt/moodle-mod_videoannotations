@@ -28,7 +28,7 @@
  */
 
 define(
-	['jquery', 'core/ajax', 'core/templates', 'core/notification', 'jqueryui', 'js/rx.all.min.js'],
+	['jquery', 'core/ajax', 'core/templates', 'core/notification', 'jqueryui', 'js/rx.all.js'],
 	function ($, ajax, templates, notification, jqui, Rx) {
 		var modinstance = $("#newannotation_modinstance").val();
 		console.log("Instance: " + modinstance);
@@ -36,7 +36,7 @@ define(
 
 		var observablesThatTriggerSubject = {
 			obs: {
-				//timer: Rx.Observable.timer(0, 1000),
+				timer: Rx.Observable.timer(0, 1000),
 				likeBtn: Rx.Observable.fromEvent($(".likebutton"), 'click')
 					.throttle(100)
 					.pluck('currentTarget')
@@ -116,7 +116,7 @@ define(
 						return Rx.Observable.fromPromise(p[0]);
 					}),
 				newAnnotationBtn: Rx.Observable.fromEvent($('#newannotationbutton'), 'click')
-					.flatMap(function () { 
+					.flatMap(function () {
 						console.log("newAnnotationBtn");
 						$("#createannotationform").accordion({
 							active: false,
@@ -144,24 +144,31 @@ define(
 			}
 		};
 		observablesThatTriggerSubject.subscribe(subject);
-		console.log(Object.keys(observablesThatTriggerSubject.subscriptions).length + " subscriptions:");
-		console.log(observablesThatTriggerSubject.subscriptions);
 
+		/**
+		 * Fetches all annotations from server
+		 */
+		var fetchData = subject.share()
+			.do(function (x) {
+				console.log(x);
+			})
+			.flatMap(function () {
+				var p = ajax.call([{
+					methodname: 'mod_videoannotations_get_annotations',
+					args: {
+						id: modinstance
+					}
+				}]);
+				return Rx.Observable.fromPromise(p[0]).share();
+			})
+			.throttle(150)
+			.share();
 
-		var fetchData = subject.throttle(800).do(function(x) {console.log(x);}).flatMap(function () {
-			var p = ajax.call([{
-				methodname: 'mod_videoannotations_get_annotations',
-				args: {
-					id: modinstance
-				}
-			}]);
-			return Rx.Observable.fromPromise(p[0]);
-		});
-
-		var extractNewOrModified = fetchData.flatMap(function (rawdata) {
+		var extractNewOrModified = fetchData
+			.flatMap(function (rawdata) {
 				return Rx.Observable.from(rawdata);
 			})
-			.distinct();
+			.distinct().share();
 
 		var renderNew = extractNewOrModified.filter(function (o) {
 				return $('#annotation-id-' + o.id).length === 0;
@@ -172,13 +179,13 @@ define(
 				var p = templates.render('mod_videoannotations/annotation', $.extend(true, {}, o));
 				return Rx.Observable.fromPromise(p);
 			})
-			.subscribe(function (html, js) {
+			.subscribe(function (html) {
 				$("#annotations").append(html);
-				templates.runTemplateJS(js);
 			});
 
 		var renderModified = extractNewOrModified.filter(function (o) {
-				return $('#annotation-id-' + o.id).length !== 0;
+				var annos = $('#annotation-id-' + o.id);
+				return false;
 			})
 			.flatMap(function (o) {
 				console.log("Found modified:");
@@ -186,21 +193,20 @@ define(
 				var p = templates.render('mod_videoannotations/annotation', $.extend(true, {}, o));
 				return Rx.Observable.fromPromise(p);
 			})
-			.subscribe(function (html, js) {
+			.subscribe(function (html) {
 				var selector = "#" + html.match("annotation-id-[0-9]+");
 				$(selector).html(html);
-				$("#annotations").append(html);
-				templates.runTemplateJS(js);
 			});
 
-		var removeDeletedAnnotations = fetchData.subscribe(function (currentData) {
-			var ids = currentData.map(function (element) {
-				return element.id;
+		var removeDeletedAnnotations = fetchData
+			.subscribe(function (currentData) {
+				var ids = currentData.map(function (element) {
+					return element.id;
+				});
+				$(".annotation").filter(function (i, element) {
+					var id = $(element).attr('id').replace("annotation-id-", "");
+					return ids.indexOf(parseInt(id)) === -1;
+				}).remove();
 			});
-			$(".annotation").filter(function (i, element) {
-				var id = $(element).attr('id').replace("annotation-id-", "");
-				return ids.indexOf(parseInt(id)) === -1;
-			}).remove();
-		});
 
 	});
