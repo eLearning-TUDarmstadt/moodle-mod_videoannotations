@@ -141,7 +141,12 @@ define(
 			},
 			subscriptions: {},
 			subscribe: function (s) {
+				console.log("(Re)Set Observables");
 				for (var o in this.obs) {
+					if (this.subscriptions[o]) {
+						this.subscriptions[o].unsubscribe();
+						delete this.subscriptions[o];
+					}
 					this.subscriptions[o] = this.obs[o].subscribe(s);
 				}
 			}
@@ -188,8 +193,13 @@ define(
 				var p = templates.render('mod_videoannotations/annotation', $.extend(true, {}, o));
 				return Rx.Observable.fromPromise(p);
 			})
-			.subscribe(function (html) {
-				$("#annotations").append(html);
+			.flatMap(function (html) {
+				// Check whether element was rendered in between
+				var selector = "#" + html.match("annotation-id-[0-9]+");
+				if ($(selector).length < 1) {
+					$("#annotations").append(html);
+				}
+				observablesThatTriggerSubject.subscribe(subject);
 			});
 
 		var renderModified = extractNewOrModified
