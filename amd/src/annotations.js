@@ -28,7 +28,7 @@
  */
 
 define(
-	['jquery', 'core/ajax', 'core/templates', 'core/notification', 'jqueryui', 'js/rx.all.js'],
+	['jquery', 'core/ajax', 'core/templates', 'core/notification', 'jqueryui', 'js/Rx.js'],
 	function ($, ajax, templates, notification, jqui, Rx) {
 		var modinstance = $("#newannotation_modinstance").val();
 		console.log("Instance: " + modinstance);
