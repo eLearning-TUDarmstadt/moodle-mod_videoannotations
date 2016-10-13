@@ -133,6 +133,9 @@ define(
 								isanswered: false,
 							}
 						}]);
+						$("#newannotation_subject").val("");
+						$("#newannotation_text").val("");
+						$("#newannotation_isquestion").prop('checked', true);
 						return Rx.Observable.fromPromise(p[0]);
 					}),
 			},
