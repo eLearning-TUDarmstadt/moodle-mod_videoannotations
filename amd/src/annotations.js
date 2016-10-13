@@ -38,7 +38,6 @@ define(
 			obs: {
 				timer: Rx.Observable.timer(0, 1000),
 				likeBtn: Rx.Observable.fromEvent($(".likebutton"), 'click')
-					.throttle(100)
 					.pluck('currentTarget')
 					.flatMap(function (e) {
 						console.log("likeBtn");
@@ -158,7 +157,7 @@ define(
 		/**
 		 * Fetches all annotations from server
 		 */
-		var fetchData = subject.share()
+		var fetchData = subject
 			/*
 			.do(function (x) {
 				console.log(x);
@@ -171,19 +170,20 @@ define(
 						id: modinstance
 					}
 				}]);
-				return Rx.Observable.fromPromise(p[0]).share();
+				return Rx.Observable.fromPromise(p[0]);
 			})
-			//.throttle(150)
+			.catch(function (e) {
+				console.error(e);
+			})
 			.share();
+		//.throttle(150)
 
 		var extractNewOrModified = fetchData
 			.flatMap(function (rawdata) {
 				return Rx.Observable.from(rawdata);
-			})
-			.share();
+			}).share();
 
 		var renderNew = extractNewOrModified
-			.distinct()
 			.filter(function (o) {
 				return $('#annotation-id-' + o.id).length === 0;
 			})
@@ -205,9 +205,8 @@ define(
 		var renderModified = extractNewOrModified
 			.filter(function (o) {
 				var length = $('#annotation-id-' + o.id).length;
-				return (length > 0) ? true : false;
+				return (length === 0) ? true : false;
 			})
-			.distinct()
 			.flatMap(function (o) {
 				console.log("Found modified:");
 				console.log(o);
